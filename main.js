@@ -169,23 +169,22 @@ app.patch('/user/update', async (req, res) => {
 
 //////////////////////////////////////////////////////////////////////
 
-/** 
- * @swagger
- * /visitor/{id}:
- *   get:
- *     description: Get visitor by id
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *          required: true
- *          description: visitor id
-*/
+// /** 
+//  * @swagger
+//  * /visitor/{id}:
+//  *   get:
+//  *     description: Get visitor by id
+//  *     parameters:
+//  *       - in: path
+//  *         name: id
+//  *         schema:
+//  *           type: string
+//  *          required: true
+//  *          description: visitor id
+// */
 
-app.get('/visitor/:id', async (req, res) =>{
-
-})
+// app.get('/visitor/:id', async (req, res) =>{
+// })
 
 app.listen(port, () => {
 	console.log(`Listening to the server on ${port}`)
