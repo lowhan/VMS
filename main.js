@@ -14,8 +14,8 @@ MongoClient.connect(
 })
 
 //web application framework for node.js HTTP applications
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require('express');
+const bodyParser = require("body");
 const app = express()
 const port = process.env.PORT || 3000    //for localhost: const port = 3000
 
