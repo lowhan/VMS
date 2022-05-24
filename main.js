@@ -21,6 +21,7 @@ const port = process.env.PORT || 3000    //for localhost: const port = 3000
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+////////////////////////////////////////////////
 //testing
 app.get('/', (req, res) => {
 	res.send('Welcome to OUR page !')
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 app.get('/test', (req, res) => {
 	res.send('testing... you are good for now')
 })
+////////////////////////////////////////////////
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -90,6 +92,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *           type: string  
  */
 
+//read
 //do http://localhost:3000/login to login the user 
 app.post('/login', async (req, res) => {
 
@@ -114,8 +117,7 @@ app.get('/login', async (req, res) => {
 	res.end('Login operation is done')		//end = json = send
 })
 
-
-
+//create
 //do http://localhost:3000/register to register the user 
 app.post('/register', async (req, res) => {
 	var user = await User.register(req.body.username, req.body.password);
@@ -138,6 +140,51 @@ app.post('/register', async (req, res) => {
 
 app.get('/register', async (req, res) => {
 	res.end('Register operation is done')
+})
+
+//delete
+app.delete('/user/delete', async (req, res) => {
+	let user = await User.delete(req.body.username)
+
+	console.log("\nDelete user:",req.body)
+	console.log("Status:",user)
+
+	if(user == "user deleted")
+	{
+		return res.status(200).send("delete success")
+	}
+	else if(user == "no user found")
+	{
+		return res.status(400).send("delete fail")
+	}
+})		
+
+//update
+app.patch('/user/update', async (req, res) => {
+	let user = await User.update(req.body.username)
+
+	console.log("\nUpdated user:",req.body)
+	console.log("Status:",user)
+})
+
+//////////////////////////////////////////////////////////////////////
+
+/** 
+ * @swagger
+ * /visitor/{id}:
+ *   get:
+ *     description: Get visitor by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *          required: true
+ *          description: visitor id
+*/
+
+app.get('/visitor/:id', async (req, res) =>{
+
 })
 
 app.listen(port, () => {

@@ -45,4 +45,14 @@ describe("User Account Management", () => {
 	// 	expect(res.password).toEqual(expect.any(String)); //it already encrypt so... test can't expect it
 	// })
 
+	// test("Delete username", async () => {
+	// 	const res = await User.delete(username)
+	// 	expect(res).toBe("user deleted")
+	// })
+
+	// test("Delete username is fail", async () => {
+	// 	const res = await User.delete(username)
+	// 	expect(res).toBe("no user found")
+	// })
+
 });

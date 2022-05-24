@@ -17,7 +17,8 @@ class User {
 	 * @param {String} username 
 	 * @param {String} password  
 	 */
-
+	
+	//create
 	static async register(username, password) {
 		// TODO: Hash password
 		bcrypt.genSalt(saltRounds, function (saltError, salt) { 
@@ -55,6 +56,7 @@ class User {
 		})	
 	}
 
+	//read
 	static async login(username, password) {
 		// TODO: Check if username exists
 		return users.findOne({								
@@ -79,6 +81,42 @@ class User {
 			}
 		})
 	}
+
+	//delete
+	static async delete(username) {
+		return users.deleteOne({
+			'username': username
+		}).then(async user =>{
+			if(user)
+			{
+				return "user deleted"
+			}
+			else
+			{
+				return "no user found"
+			}
+		})  
+	}
+
+	//update
+	// static async update(username, password, newpassword) {
+	// 	return users.updateOne({
+	// 		'username': username,
+	// 	}).then(async user =>{
+	// 		if(user)
+	// 		{
+	// 			return "user deleted"
+	// 		}
+	// 		else
+	// 		{
+	// 			return "no user found"
+	// 		}
+	// 	})  
+	// }
 }
+
+
+
+
 
 module.exports = User;
