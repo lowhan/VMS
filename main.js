@@ -79,15 +79,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *   schemas:
  *     User:
  *       type: object
- *      properties:
- *       _id:
- *         type: string
- *        username:
- *         type: string
- *        password:
- *         type: string 
- *           phone:
- *         type: string  
+ *       properties:
+ *         _id:
+ *           type: string
+ *         username:
+ *           type: string
+ *         password:
+ *           type: string 
+ *         phone:
+ *           type: string  
  */
 
 //do http://localhost:3000/login to login the user 
