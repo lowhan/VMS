@@ -4,7 +4,7 @@
 	"description": "BENR2423 Visitor Management System API",
 	"main": "main.js",
 	"engines": {
-		"node": "14.x"
+		"node": "v16.14.2"
 	},
 	"scripts": {
 		"start": "node main.js",
