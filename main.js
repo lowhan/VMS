@@ -17,10 +17,11 @@ MongoClient.connect(
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 3000    //for localhost: const port = 3000
+const bodyParser = require('body-parser')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-
+app.use(bodyParser.json())
 ////////////////////////////////////////////////
 //testing
 app.get('/', (req, res) => {
