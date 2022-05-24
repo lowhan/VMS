@@ -17,8 +17,8 @@ MongoClient.connect(
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express()
-const port = process.env.PORT || 3000    //for localhost: const port = 3000
-
+const port = 3000    //for localhost: const port = 3000
+//process.env.PORT ||
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use(bodyParser.json());
