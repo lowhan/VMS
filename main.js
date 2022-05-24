@@ -62,15 +62,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *                 type: string
  *               password:
  *                 type: string
- *      responses:
- *        200:
- *          description: Successful login
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/User'
- *        401:
- *          description: Invalid username or password
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Invalid username or password
  */
 
 /**
