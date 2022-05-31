@@ -1,9 +1,8 @@
+// Connection to MongoDB
 const MongoClient = require("mongodb").MongoClient;
 const User = require("./user");
-
-MongoClient.connect(
-	// TODO: Connection 
-	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+MongoClient.connect( 
+	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -13,15 +12,16 @@ MongoClient.connect(
 	User.injectDB(client);
 })
 
-//web application framework for node.js HTTP applications
-const express = require('express');
+// web application framework for node.js HTTP applications
+const express = require('express')
 const app = express()
-const port = process.env.PORT || 5000    //for localhost: const port = 3000
-app.use(express.json());
-app.use(express.urlencoded({extended:true}))
+const port = 3000
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
-////////////////////////////////////////////////
-//testing
+///////////////////////////////////////////////////////////////
+// Testing
+
 app.get('/', (req, res) => {
 	res.send('Welcome to OUR page !')
 })
@@ -29,162 +29,129 @@ app.get('/', (req, res) => {
 app.get('/test', (req, res) => {
 	res.send('testing... you are good for now')
 })
-////////////////////////////////////////////////
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const options = {
-	definition: {
-		openapi:'3.0.0',
-		info: {
-			title:'MyVMS API',
-			version: '1.0.0',
-		},
-	},
-	apis: ['./main.js'], //files containing annotations as above
-};
-const swaggerSpec = swaggerJsdoc(options);
-console.log(swaggerSpec);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+///////////////////////////////////////////////////////////////
+// post + read
 
-/**
- * @swagger
- * /login:
- *   post:
- *     description: User Login
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Invalid username or password
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       properties:
- *         _id:
- *           type: string
- *         username:
- *           type: string
- *         password:
- *           type: string 
- *         phone:
- *           type: string  
- */
-
-//read
-//do http://localhost:3000/login to login the user 
-app.post('/login', async (req, res) => {
-
-	const user = await User.login(req.body.username, req.body.password);
-
-	console.log('\nLogin user:', req.body); //check in console;
-	console.log('Login status:', user);
+app.post('/user/login', async (req, res) => {								
+	const user = await User.login(req.body);
+	//check in console
+	console.log('\nLogin user:', req.body);
 
 	if(user == "invalid username" || user == "invalid password")
 	{
+		console.log('Login status:', user)
 		return res.status(400).send("login fail")
 	}
-	else if(user)
+	else
 	{
+		console.log('Login detail:', user)
 		return res.status(200).json({
-			username: req.body.username,
-			password: req.body.password
+			_id : user._id,
+			username : user.username,
+			phone : user.phone,
+			role : user.role,
 		})
 	}
 })
-app.get('/login', async (req, res) => {
-	res.end('Login operation is done')		//end = json = send
-})
 
-//create
-//do http://localhost:3000/register to register the user 
-app.post('/register', async (req, res) => {
-	var user = await User.register(req.body.username, req.body.password);
+///////////////////////////////////////////////////////////////
+// post + create
 
+app.post('/user/register', async (req, res) => { 							
+	let user = await User.register(req.body);
+	//check in console
 	console.log('\nRegister user:',req.body);
-	console.log('Registration status:', user);
+	console.log('Registration status:',user);
 
-	if(user == "user exist")
+	if(user == "creation fail")
 	{
-		return res.status(400).send("register fail")
+		return res.status(400).send("creation fail")
 	}
-	else if(user == "new user created")
+	if(user == "creation success")
 	{
-		return res.status(200).json({
-			username: req.body.username,
-			password: req.body.password
-		})
+		return res.status(200).send("creation success")
 	}
 })
-
-app.get('/register', async (req, res) => {
-	res.end('Register operation is done')
-})
-
+														
+///////////////////////////////////////////////////////////////	
 //delete
+
 app.delete('/user/delete', async (req, res) => {
-	let user = await User.delete(req.body.username)
+	let user = await User.delete(req.body)
+	console.log("\nDelete user:", req.body)
+	console.log("Deletion status:", user)
 
-	console.log("\nDelete user:",req.body)
-	console.log("Status:",user)
-
-	if(user == "user deleted")
+	if(user == "deletion fail" || user == "invalid username")
 	{
-		return res.status(200).send("delete success")
+		return res.status(400).send("deletion fail")
 	}
-	else if(user == "no user found")
+	if(user == "deletion success")
 	{
-		return res.status(400).send("delete fail")
+		return res.status(200).send("deletion success")
 	}
 })		
 
-//update
-app.patch('/user/update', async (req, res) => {
-	let user = await User.update(req.body.username)
+///////////////////////////////////////////////////////////////
+// patch + update
 
-	console.log("\nUpdated user:",req.body)
-	console.log("Status:",user)
+app.patch('/user/update', async (req, res) => {
+	let user = await User.update(req.body)
+	console.log("\nUpdate user:", req.body)
+	console.log("Update status:", user)
+
+	if(user == "update fail" || user == "invalid username")
+	{
+		return res.status(400).send("update fail")
+	}
+	if(user == "update success")
+	{
+		return res.status(200).send("update success")
+	}
 })
 
-//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
+// get	//end = json = send
 
-// /** 
-//  * @swagger
-//  * /visitor/{id}:
-//  *   get:
-//  *     description: Get visitor by id
-//  *     parameters:
-//  *       - in: path
-//  *         name: id
-//  *         schema:
-//  *           type: string
-//  *          required: true
-//  *          description: visitor id
-// */
+app.get('/user', async (req, res) => {
+	let view = await User.view()
+	res.send(view);		
+})
 
-// app.get('/visitor/:id', async (req, res) =>{
-// })
+app.get('/user/login', async (req, res) => {
+	res.send(
+		"To Login and view the user's details, please enter username and password in JSON format"
+	)		
+})
+
+app.get('/user/register', async (req, res) => {
+	res.send(
+		"To create new user, please enter username, password, phone and role in JSON format"
+	)	
+})
+
+app.get('/user/delete', async (req, res) => {
+	res.send(
+		"To delete the user, please enter username and password in JSON format"
+	)	
+})
+
+app.get('/user/update', async (req, res) => {
+	res.send(
+		"To update an user, please enter username and password with their updating info (eg. phone) in JSON format"
+	)	
+})
+
+///////////////////////////////////////////////////////////////
+// Print server on console
 
 app.listen(port, () => {
 	console.log(`Listening to the server on ${port}`)
 })
+
+///////////////////////////////////////////////////////////////
+// 200 = OK, 201 = created
+// 400 = bad request, 404 = Not found
+///////////////////////////////////////////////////////////////
+
+

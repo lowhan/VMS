@@ -1,122 +1,168 @@
+//////////////////main function of user//////////////////////
 let users;
-
 const { hash } = require("bcrypt");
 const bcrypt = require("bcryptjs")
 const saltRounds = 10;
 var encrypt;
+////////////////////////////////////////////////////////////
 
 class User {
 	static async injectDB(conn) {
-		users = await conn.db("TDDweek7").collection("users")
+		users = await conn.db("Lab3").collection("users")
 	}
+	////////////////////////////////////////////////////////////
+	//CRUD = create, read, update, delete
+	////////////////////////////////////////////////////////////
 
-	/**
-	 * @remarks
-	 * This method is not implemented yet. To register a new user, you need to call this method.
-	 * 
-	 * @param {String} username 
-	 * @param {String} password  
-	 */
-	
 	//create
-	static async register(username, password) {
-		// TODO: Hash password
-		bcrypt.genSalt(saltRounds, function (saltError, salt) { 
-			if (saltError) {
-			  throw saltError
-			} else {
-			  	bcrypt.hash(password, salt, function(hashError, hash) {  
-					if (hashError) {
+	static async register(sample) {		
+		//Hash password	
+		bcrypt.genSalt(saltRounds, function (saltError, salt) {  
+			if (saltError) 
+			{
+				throw saltError
+			} 
+			else 
+			{
+				bcrypt.hash(sample.password, salt, function(hashError, hash) 
+				{  
+					if (hashError) 
+					{
 				  		throw hashError
-					} else {
+					} 
+					else 
+					{
 						encrypt = hash;
 					}
-			  	})
+				})
 			}
 		});
-		// TODO: Check if username exists
-		return users.findOne({								 
-				'username': username			
+		//registration
+		return users.findOne({		//Check if username exists						 
+				'username': sample.username			
 		}).then(async user =>{
-			if (user) {
-				if ( user.username == username )
+			if (user) 
+			{
+				if (user.username == sample.username)
 				{
-					return "user exist";
+					return "creation fail";
 				}
 			}
 			else
 			{
-				// TODO: Save user to database
-				await users.insertOne({						
-					'username' : username,
-					'password' : encrypt
+				await users.insertOne({	 //Save user to database				
+					'username' : sample.username,
+					'password' : encrypt,
+					'phone' : sample.phone,
+					'role' : sample.role
 				})
-				return "new user created";
+				return "creation success";
 			}
 		})	
 	}
 
-	//read
-	static async login(username, password) {
-		// TODO: Check if username exists
-		return users.findOne({								
-				'username': username				
+	////////////////////////////////////////////////////////////
+	// read 
+	static async login(sample) { 											
+		return users.findOne({		//Check if username exists							
+				'username': sample.username				
 		}).then(async user =>{
-			if (user) { // Validate username
-				
-				const PasswordValid = await bcrypt.compare(password, user.password)
-				// TODO: Validate password 
-				if ( PasswordValid == false) {
+			if (user) // Validate username
+			{ 
+				const PasswordValid = await bcrypt.compare(sample.password, user.password)	// Validate password	 
+				if (PasswordValid == false) 
+				{
 					return "invalid password";
 				}
 				else
 				{
-					// TODO: Return user object
-					return user;
+					return user; // Return user object
 				}
 			}
-			else // if user doesn't exists
+			else // If user doesn't exists
 			{
 				return "invalid username";
 			}
 		})
 	}
 
-	//delete
-	static async delete(username) {
-		return users.deleteOne({
-			'username': username
-		}).then(async user =>{
-			if(user)
+	// read : print user
+	static async view() {
+		return users.aggregate([{
+			$project:
 			{
-				return "user deleted"
+				'_id':0,
+				'username':1,
+				'phone':1
 			}
-			else
-			{
-				return "no user found"
-			}
-		})  
+		}]).toArray().then(async user =>{
+			return user;
+		})
 	}
 
+	////////////////////////////////////////////////////////////																	
+	//delete
+	static async delete(sample) {	// Only delete when username and password are matched
+		return users.findOne({								
+			'username': sample.username				
+		}).then(async user =>{
+			if (user) // Validate username
+			{ 			
+				const PasswordValid = await bcrypt.compare(sample.password, user.password) // Validate password		 
+				if (PasswordValid == false) 
+				{ 
+					return "deletion fail";
+				}
+				else
+				{
+					await users.deleteOne({'username': sample.username});
+					return "deletion success";
+				}
+			}
+			else // if user doesn't exists
+			{
+				return "invalid username";
+			} 
+		})
+	}
+
+	////////////////////////////////////////////////////////////
 	//update
-	// static async update(username, password, newpassword) {
-	// 	return users.updateOne({
-	// 		'username': username,
-	// 	}).then(async user =>{
-	// 		if(user)
-	// 		{
-	// 			return "user deleted"
-	// 		}
-	// 		else
-	// 		{
-	// 			return "no user found"
-	// 		}
-	// 	})  
-	// }
+	static async update(sample) {	// Only update when username and password are matched
+		return users.findOne({								
+			'username': sample.username				
+		}).then(async user =>{
+			if (user) // Validate username
+			{ 			
+				const PasswordValid = await bcrypt.compare(sample.password, user.password) // Validate password		 
+				if (PasswordValid == false) 
+				{ 
+					return "update fail";
+				}
+				else
+				{
+					await users.updateOne(	
+						{ // Target to change
+							'username' : sample.username 
+						}
+						, 
+						{ // Value to change
+							'$set' : { 'phone' : sample.phone,
+									   'role'  : sample.role
+						 	} 
+						}		   
+					);
+					return "update success";
+				}
+			}
+			else // if user doesn't exists
+			{
+				return "invalid username";
+			} 
+		})
+	}
+
+	////////////////////////////////////////////////////////////
 }
-
-
-
-
 
 module.exports = User;
