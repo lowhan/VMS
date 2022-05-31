@@ -20,6 +20,88 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 ///////////////////////////////////////////////////////////////
+//jwt
+const jwt = require('jsonwebtoken');
+function generateAccessToken(payload) {
+	return jwt.sign(payload, "my-super-secret", { expiresIn: '1h'});
+}
+
+app.use((req, res, next) => {
+	const authHeader = req.headers['authorization'];
+	const token = authHeader && authHeader.split(' ')[1];
+
+	if(token == null) return res.sendStatus(401);
+
+	jwt.verify(token, "my-super-secret", (err, user) => {
+		if(err) return res.sendStatus(403);
+		req.user = user;
+		next();
+	});
+})
+
+///////////////////////////////////////////////////////////////
+// swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const options = {
+	definition: {
+		openapi:'3.0.0',
+		info: {
+			title:'MyVMS API',
+			version: '1.0.0',
+		},
+	},
+	apis: ['./main.js'], //files containing annotations as above
+};
+const swaggerSpec = swaggerJsdoc(options);
+console.log(swaggerSpec);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     description: User Login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Invalid username or password
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         username:
+ *           type: string
+ *         password:
+ *           type: string 
+ *         phone:
+ *           type: string  
+ */
+
+///////////////////////////////////////////////////////////////
 // Testing
 
 app.get('/', (req, res) => {
@@ -46,13 +128,15 @@ app.post('/user/login', async (req, res) => {
 	else
 	{
 		console.log('Login detail:', user)
-		return res.status(200).json({
+		res.status(200).json({
 			_id : user._id,
 			username : user.username,
 			phone : user.phone,
-			role : user.role,
+			token : generateAccessToken({ username: user.username, role: 'admin' })
 		})
 	}
+
+	
 })
 
 ///////////////////////////////////////////////////////////////
@@ -140,6 +224,37 @@ app.get('/user/update', async (req, res) => {
 	res.send(
 		"To update an user, please enter username and password with their updating info (eg. phone) in JSON format"
 	)	
+})
+
+///////////////////////////////////////////////////////////////
+
+/** 
+ * @swagger
+ * /visitor/{id}:
+ *   get:
+ *     description: Get visitor by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: visitor id
+*/
+
+app.get('/visitor/:id', async (req, res) =>{
+})
+
+///////////////////////////////////////////////////////////////
+//JWT
+
+app.get('/user/admin', async (req,res) =>{
+	console.log(req.body.role);
+
+	if(req.user.role == 'admin')
+		res.status(200).send('You are admin')
+	else
+		res.status(403).send('You are not admin')
 })
 
 ///////////////////////////////////////////////////////////////
