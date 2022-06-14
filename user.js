@@ -1,5 +1,5 @@
 //////////////////main function of user//////////////////////
-let users;
+let users, visitors;
 const { hash } = require("bcrypt");
 const bcrypt = require("bcryptjs")
 const saltRounds = 10;
@@ -8,11 +8,22 @@ var encrypt;
 
 class User {
 	static async injectDB(conn) {
-		users = await conn.db("Lab3").collection("users")
+		users = await conn.db("VMS").collection("users");
+		visitors = await conn.db("VMS").collection("visitors");
 	}
 	////////////////////////////////////////////////////////////
 	//CRUD = create, read, update, delete
 	////////////////////////////////////////////////////////////
+	
+	/**
+	 * @remarks
+	 * This method is not implemented yet. To register a new user, you need to call this method.
+	 * 
+	 * @param {*} username 
+	 * @param {*} password 
+	 * @param {*} phone 
+	 * @param {*} role
+	 */	
 
 	//create
 	static async register(sample) {		
@@ -54,7 +65,7 @@ class User {
 					'username' : sample.username,
 					'password' : encrypt,
 					'phone' : sample.phone,
-					'role' : sample.role
+					'role' : 'user'
 				})
 				return "creation success";
 			}
@@ -108,8 +119,9 @@ class User {
 		}).then(async user =>{
 			if (user) // Validate username
 			{ 			
-				const PasswordValid = await bcrypt.compare(sample.password, user.password) // Validate password		 
-				if (PasswordValid == false) 
+				console.log(user);
+				//const PasswordValid = await bcrypt.compare(user.password,sample.password) // Validate password	
+				if (sample.password != user.password) 
 				{ 
 					return "deletion fail";
 				}
@@ -128,14 +140,14 @@ class User {
 
 	////////////////////////////////////////////////////////////
 	//update
-	static async update(sample) {	// Only update when username and password are matched
+	static async update(sample, updatedoc) {	// Only update when username and password are matched
 		return users.findOne({								
 			'username': sample.username				
 		}).then(async user =>{
 			if (user) // Validate username
 			{ 			
-				const PasswordValid = await bcrypt.compare(sample.password, user.password) // Validate password		 
-				if (PasswordValid == false) 
+				//const PasswordValid = await bcrypt.compare(sample.password, user.password) // Validate password		 
+				if (sample.password != user.password) 
 				{ 
 					return "update fail";
 				}
@@ -147,8 +159,8 @@ class User {
 						}
 						, 
 						{ // Value to change
-							'$set' : { 'phone' : sample.phone,
-									   'role'  : sample.role
+							'$set' : { 'phone' : updatedoc.phone,
+									   'role'  : updatedoc.role
 						 	} 
 						}		   
 					);
@@ -163,6 +175,34 @@ class User {
 	}
 
 	////////////////////////////////////////////////////////////
+	// create visitor
+	static async createvistor(user,visitor) {	// Only delete when username and password are matched 
+		return visitors.insertOne({	
+			'username' : visitor.username,
+			'phone' : visitor.phone,
+			'role' : 'visitor',
+			'user_id' : user._id
+		}).then(async res =>{
+			if (res) 
+			{ 	
+				await users.updateOne(	
+				{
+					'username' : user.username 
+				}
+				, 
+				{ 
+					'$set' : { 
+						'visitor_id' : res.insertedId.toString()
+					} 
+				});		
+				return "visitor creation success";
+			}
+			else 
+			{
+				return "visitor creation fail";
+			} 
+		})
+	}
 }
 
 module.exports = User;
