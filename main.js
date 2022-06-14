@@ -1,4 +1,4 @@
-// Connection to MongoDB  testing 123
+// Connection to MongoDB 
 const MongoClient = require("mongodb").MongoClient;
 const User = require("./user");
 MongoClient.connect( 
