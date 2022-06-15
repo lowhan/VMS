@@ -2,6 +2,7 @@
 const MongoClient = require("mongodb").MongoClient; // Connection to MongoDB 
 const User = require("./user");	                    // Import user class
 const Visitor = require("./visitor");				// Import visitor class
+const Admin = require("./admin");                   // Import admin class
 const jwt = require('jsonwebtoken');                // JWT token		
 
 MongoClient.connect( 
