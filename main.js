@@ -13,6 +13,7 @@ MongoClient.connect(
 }).then(async client => {
 	console.log('Connected to MongoDB');
 	User.injectDB(client);
+	Admin.injectDB(client);
 	Visitor.injectDB(client);
 })
 
