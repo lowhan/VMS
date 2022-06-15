@@ -1,4 +1,3 @@
-
 const MongoClient = require("mongodb").MongoClient; // Connection to MongoDB 
 const User = require("./user");	                    // Import user class
 const Visitor = require("./visitor");				// Import visitor class
@@ -215,6 +214,64 @@ app.get('/user/admin', verifyToken, async (req,res) =>{
 		res.status(200).send('You are admin')
 	else
 		res.status(403).send('You are not admin')
+})
+
+///////////////////////////////////////////////////////////////
+//user +admin
+
+
+app.get('/user/admin', async (req,res) =>{
+	console.log(req.body.role);
+
+	if(req.user.role == 'admin')
+		res.status(200).send('You are admin')
+	else
+		res.status(403).send('You are not admin')
+})
+///////////////////////////////////////////////////////////////
+// post + create
+
+app.post('/user/admin/register', async (req, res) => { 							
+	let admin = await User.createadmin(req.user,req.body);
+	//check in console
+	console.log('\nRegister user:',req.body);
+	console.log('Registration status:',admin);
+
+	if(admin == "creation fail")
+	{
+		return res.status(400).send("creation fail")
+	}
+	if(admin == "creation success")
+	{
+		return res.status(200).send("creation success")
+	}
+})
+///////////////////////////////////////////////////////////////
+app.post('user/admin/login', async (req, res) => {								
+	const admin = await admin.login(req.body);
+	//check in console
+	console.log('\nLogin admin:', req.body);
+
+	if(admin == "invalid username" || admin == "invalid password")
+	{
+		console.log('Login status:', admin)
+		return res.status(400).send("admin login fail")
+	}
+	else
+	{
+		console.log('Login detail:', admin)
+		res.status(200).json({
+			_id : admin._id,
+			username : admin.username,
+			phone : admin.phone,
+            role : admin.role,
+			token : generateAccessToken({ 
+                _id: admin._id,
+                username: admin.role,
+             })
+		});
+	}
+	
 })
 
 ///////////////////////////////////////////////////////////////
