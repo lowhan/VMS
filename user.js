@@ -25,52 +25,52 @@ class User {
 	 * @param {*} role
 	 */	
 
-	//create
-	static async register(sample) {		
-		//Hash password	
-		bcrypt.genSalt(saltRounds, function (saltError, salt) {  
-			if (saltError) 
-			{
-				throw saltError
-			} 
-			else 
-			{
-				bcrypt.hash(sample.password, salt, function(hashError, hash) 
-				{  
-					if (hashError) 
-					{
-				  		throw hashError
-					} 
-					else 
-					{
-						encrypt = hash;
-					}
-				})
-			}
-		});
-		//registration
-		return users.findOne({		//Check if username exists						 
-				'username': sample.username			
-		}).then(async user =>{
-			if (user) 
-			{
-				if (user.username == sample.username)
-				{
-					return "creation fail";
-				}
-			}
-			else
-			{
-				await users.insertOne({	 //Save user to database				
-					'username' : sample.username,
-					'password' : encrypt,
-					'phone' : sample.phone,
-					'role' : 'user'
-				})
-				return "creation success";
-			}
-		})	
-	}
+	// //create
+	// static async register(sample) {		
+	// 	//Hash password	
+	// 	bcrypt.genSalt(saltRounds, function (saltError, salt) {  
+	// 		if (saltError) 
+	// 		{
+	// 			throw saltError
+	// 		} 
+	// 		else 
+	// 		{
+	// 			bcrypt.hash(sample.password, salt, function(hashError, hash) 
+	// 			{  
+	// 				if (hashError) 
+	// 				{
+	// 			  		throw hashError
+	// 				} 
+	// 				else 
+	// 				{
+	// 					encrypt = hash;
+	// 				}
+	// 			})
+	// 		}
+	// 	});
+	// 	//registration
+	// 	return users.findOne({		//Check if username exists						 
+	// 			'username': sample.username			
+	// 	}).then(async user =>{
+	// 		if (user) 
+	// 		{
+	// 			if (user.username == sample.username)
+	// 			{
+	// 				return "creation fail";
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			await users.insertOne({	 //Save user to database				
+	// 				'username' : sample.username,
+	// 				'password' : encrypt,
+	// 				'phone' : sample.phone,
+	// 				'role' : 'user'
+	// 			})
+	// 			return "creation success";
+	// 		}
+	// 	})	
+	// }
 
 	////////////////////////////////////////////////////////////
 	// read 
@@ -203,6 +203,31 @@ class User {
 			} 
 		})
 	}
+	////////////////////////////////////////////////////////
+	//delete visitor
+	static async deletevisitor(user,visitor) {	// Only delete when username and password are matched
+		return users.findOne({								
+			'username': sample.username				
+		}).then(async user =>{
+			if (user) // Validate username
+			{ 			
+				console.log(user);
+				//const PasswordValid = await bcrypt.compare(user.password,sample.password) // Validate password	
+				if (sample.password != user.password) 
+				{ 
+					return "deletion fail";
+				}
+				else
+				{
+					await users.deleteOne({'username': sample.username});
+					return "deletion success";
+				}
+			}
+			else // if user doesn't exists
+			{
+				return "invalid username";
+			} 
+		})
+	}
 }
-
 module.exports = User;

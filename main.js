@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');                // JWT token
 
 MongoClient.connect( 
 	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+	//"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -324,6 +325,23 @@ app.post('/user/visitor/register',verifyToken, async (req, res) => {
 	if(visitor == "visitor creation success")
 	{
 		return res.status(200).send("visitor creation success")
+	}
+})
+
+//delete
+app.delete('/user/visitor/delete',verifyToken, async(req, res) =>{
+	let visitor = await User.deletevisitor(req.user,req.body);
+	//check with console
+	console.log('\nRegister user:', req.body);
+	console.log('Registration status:', visitor);
+
+	if (visitor == "visitor creation fail")
+	{
+		return res.status(400).send("visitor deletion fail")
+	}
+	if (visitor == "visitor deletion succeess")
+	{
+		return res.status(200).send("visitor deletion success")
 	}
 })
 
