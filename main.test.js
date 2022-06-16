@@ -31,13 +31,6 @@ const badpasswordsample = {				// badpsample for register fail, login fail (inva
 	role : "user",
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-// Flow of the test :  																				//						   
-// Start > Register success (newsample) > Register fail (badpsample) > Login success (newsample) >  //
-// Login fail (badusersample) > update success (updatesample) > update fail (badpsample) >          //	
-// delete fail (badpsample) > delete success (newsample) > End           							//
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
 describe('Express Route Test', function () {
 	////////////////////////////////////////////////////////////////////////
 	// get 
