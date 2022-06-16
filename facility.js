@@ -9,21 +9,21 @@ class Facility {
     // create facility
 	static async createfacility(token,detail) {		
 		return facilities.findOne({								 
-				'user_id': token._id					// only can be use by user
+				'user_id': token._id						// only can be use by user
 		}).then(async facility =>{
 			if (facility) 
 			{
-				return "facility creation fail"; 		// duplicate facility
+				return "facility creation fail"; 			// duplicate facility
 			}
 			else
 			{
 				await facilities.insertOne({	 			// Save user to database				
 					'user_id' : token._id,
-					'visitor_id' : detail.visitor_id, 
-                    'security_id' : token.security_id,	// insert by user
+					'visitor_id' : detail.visitor_id, 		// insert by user
+                    'security_id' : token.security_id,	
 					'number_of_participants': detail.number_of_participants,
 					'facility_': detail.facility,
-					'facility_access_permission': "no_access",
+					'facility_access_permission': "no_access"
 				})
 				return "facility creation success";
 			}
@@ -31,7 +31,7 @@ class Facility {
 	}
 
     // view facility
-	static async viewfacility(token) {				// token or detail in json (for visitor)	
+	static async viewfacility(token) {				// token or detail in json 	
 		return facilities.findOne({								 
 			$or : 
 			[
@@ -52,30 +52,28 @@ class Facility {
 	}
 
     // update facility details
-	static async updatefacilitydetail(token,detail) {		// token or detail in json (for visitor)	
+	static async updatefacilitydetail(token,detail) {		// token or detail in json (for user)
 		return facilities.findOne({								 
-			'user_id': token._id					// only can be use by user
+			'user_id': token._id					
 		}).then(async facility =>{
 			if (facility) 
 			{
 				await facilities.updateOne({'user_id' : facility.user_id},{ // update user to database
-					$set:{
-						'visitor_id' : detail.visitor_id, 			 
+					$set:{ 			 
 						'number_of_participants': detail.number_of_participants,
 						'facility': detail.facility
-						
 					}	 							
 				})
 				return "facility update success";
 			}
 			else
 			{
-				return "facility update fail"; 			// nothing to update
+				return "facility update fail"; 								// nothing to update
 			}
 		})	
 	}
 
-    // delete parking
+    // delete facility
 	static async deletefacility(detail) {		
 		return facilities.findOne({ 'user_id' : detail._id }).then(async facility =>{
 			if (facility) 
@@ -92,7 +90,5 @@ class Facility {
 		})	
 	}
 }
-
-
 
 module.exports = Facility;

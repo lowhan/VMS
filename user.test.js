@@ -2,26 +2,51 @@ const MongoClient = require("mongodb").MongoClient;
 const User = require("./user");
 
 //sample data  
-const updatedocument = {					// update sample for update success
-						
-	"visitor_phonenumber": "999999991111"
-};
-const token = {
-	"visitor_id":"62aa1aeb6634891b999194a4",
-	 "username":"user2"
-};
 
-const visitorId = {
-	"_id":"62aa1aeb6634891b999194a4",
-	"username":"user2",
-	"visitor_phonenumber": "888888888888888"
-}	
-const sample = {
-		'username' : 'user2',
-		'phone' : '011-111111',
-		'role' : 'visitor',
-		'user_id' :'62a8a0a711245af602f0d323'
-};
+const sampleuser = {						// new sample for register success, login success, delete success
+    _id : "62aafe1fb1082983abec82cd",
+	security_id:"62aafc8472263b2a3ed6e658",
+    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
+	login_password : "password3",
+    user_name : "user_ali",
+	user_phonenumber: "011-1234567",
+    role : "user",
+}
+
+const badpassworduser = {						// new sample for register success, login success, delete success
+    _id : "62aafe1fb1082983abec82cd",
+	security_id:"secure_1",
+    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
+	login_password : "badpassword",
+    user_name : "user_ali",
+	user_phonenumber: "011-1234567",
+    role : "user",
+}
+
+const samplevisitor = {				
+	'visitor_name' : 'visitor1',
+	'visitor_phonenumber' : '0124685214',
+	'number_of_visitors' : 5,
+	'room_info' : 'A102',
+	'arrival_time' : '16/3/22',
+	'end_time' : '16/4/22'
+}
+
+const updatedocument = {
+	'visitor_id':'62ab3b290983751028fff1c6', // target visitor
+	'number_of_visitors' : 2,
+	'room_info' : 'A101',
+	'arrival_time' : '5/1/22',
+	'end_time' : '10/2/22'
+}
+
+const wrongidupdatedocument = {
+	'visitor_id':'thisiddoesntexist', // target visitor
+	'number_of_visitors' : 2,
+	'room_info' : 'A101',
+	'arrival_time' : '5/1/22',
+	'end_time' : '10/2/22'
+}
 
 describe("User Account Management", () => {
 	let client;
@@ -35,51 +60,67 @@ describe("User Account Management", () => {
 	afterAll(async () => {
 		await client.close();
 	})
-	////////////////////Create visitor/////////////////////////////
-	// test("User Registration - success - new username", async () => {
-	// const res = await User.register(newsample);
-	// expect(res).toBe("creation success");
+
+	// // user - login 
+	// test("User login - success", async () => {
+	// 	const res = await User.loginuser(sampleuser);
+	// 	expect(res.login_username).toBe(sampleuser.login_username);
+	// })
+
+	// test("User login - invalid password", async () => {
+	// 	const res = await User.loginuser(sampleuser);
+	// 	expect(res).toBe("invalid password");
+	// })
+
+	// test("User login - invalid username", async () => {
+	// 	const res = await User.loginuser(sampleuser);
+	// 	expect(res).toBe("invalid username");
+	// })
+
+	////////////////////Create visitor//////////////////
+	// test("User - Visitor creation  - success - new visitor", async () => {
+	// 	const res = await User.createvistor(sampleuser,samplevisitor);
+	// 	expect(res).toBe("visitor creation success");
 	// })	
 
-	 //  test("User Registration - fail ", async () => {
-	// 	const res = await User.register(token,detail);
+	// test("User - Visitor creation - fail - duplicate", async () => {
+	// 	const res = await User.register(sampleuser,badpassworduser);
 	// 	expect(res).toBe("visitor creation fail");
 	// })
 
+	/////////////////Update visitor//////////////////
+	// test ("User - Visitor Update - success",async() =>{
+	// 	const res = await User.updatevisitor(sampleuser,updatedocument);
+	// 	expect(res).toBe("visitor update success");
+	// })
+	
+	// test("User - Visitor Update - fail", async () => {
+	// 	const res = await User.updatevisitor(sampleuser, wrongidupdatedocument);
+	// 	try
+	// 	{
+	// 		expect(res).toBe("visitor update fail");
+	// 	}
+	// 	catch
+	// 	{
+	// 		expect(res).toBe("invalid username");
+	// 	}	
+	// })
 
 	///////////////Delete Visitor///////////////////////
-	// test("User - Visitor Deletion", async() => {
-    // const res = await User.deletevisitor(token,visitorId);
+	// test("User - Visitor Deletion - fail", async () => {
+	// 	const res = await User.deletevisitor(sampleuser,wrongidupdatedocument);
+	// 	try
+	// 	{
+	// 		expect(res).toBe("visitor deletion fail");
+	// 	}
+	// 	catch
+	// 	{
+	// 		expect(res).toBe("invalid username");
+	// 	}
+	// })
+	
+	// test("User - Visitor Deletion - success", async() => {
+    // const res = await User.deletevisitor(sampleuser,updatedocument);
 	// expect(res).toBe("visitor deletion success");
 	// })
-
-	//  test("User - Visitor Deletion-fail", async () => {
-	// 	const res = await User.deletevisitor(token,detail);
-	// 	expect(res).toBe("visitor deletion fail");
-	// })
-	
-
-	////////////////////Create visitor/////////////////////////////
-	// test("User - Visitor creation",async() =>{
-	// const res  = await User.createvistor(token,sample);
-	// expect(res).toBe("visitor creation success");
-	// })
-
-	//  test("User - Visitor creation-fail", async () => {
-	// 	const res = await User.createvisitor(token,detail);
-	// 	expect(res).toBe("visitor creation fail");
-	// })
-	
-////////////////////Update visitor/////////////////////////////
-	// test ("User - Visitor Update",async() =>{
-	// const res = await User.updatevisitor(token,visitorId,updatedocument)
-	// expect(res).toBe("update success");
-	// })
-	// //test("User - Visitor View")
-
-	//  test("User - Visitor Update-fail", async () => {
-	// 	const res = await User.visitor(token,detail);
-	// 	expect(res).toBe("update fail");
-	// })
-
 });
