@@ -125,7 +125,9 @@ app.post('/user/login', async (req, res) => {
 				username : user.username,
 				password : user.password,
 				phone : user.phone, 
-				role : user.role
+				role : user.role,
+				visitor_id: user.visitor_id
+
 			})
 		})	
 	}
@@ -342,6 +344,29 @@ app.delete('/user/visitor/delete',verifyToken, async(req, res) =>{
 	if (visitor == "visitor deletion succeess")
 	{
 		return res.status(200).send("visitor deletion success")
+	}
+})
+////////////////////////////////////////////////////////////////////
+//View Visitor
+app.get('/user/visitor', async (req, res) => {
+	let view = await User.viewvisitor()
+	res.send(view);		
+})
+////////////////////////////////////////////////////////////////////////
+//update visitor
+app.patch('/user/visitor/update',verifyToken, async(req, res) =>{
+	let visitor = await User.updatevisitor(req.user,req.body);
+	//check with console
+	console.log('\nRegister user:', req.body);
+	console.log('Registration status:', visitor);
+
+	if (visitor == "visitor creation fail")
+	{
+		return res.status(400).send("visitor update fail")
+	}
+	if (visitor == "visitor update succeess")
+	{
+		return res.status(200).send("visitor update success")
 	}
 })
 
