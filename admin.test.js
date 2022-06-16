@@ -2,7 +2,7 @@ const MongoClient = require("mongodb").MongoClient;
 const Admin = require("./admin"); 
 
 //sample data  
-const newsample_admin = {			    // new sample for register success, login success, delete success
+const newsample_admin = {			   
     username : "usertest2",				// make sure this data is not exist in your mongodb 
 	password : "password1",
     security_name:"secure_tan",
