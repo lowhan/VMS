@@ -22,7 +22,7 @@ class Facility {
 					'visitor_id' : detail.visitor_id, 		// insert by user
                     'security_id' : token.security_id,	
 					'number_of_participants': detail.number_of_participants,
-					'facility_': detail.facility,
+					'facility': detail.facility,
 					'facility_access_permission': "no_access"
 				})
 				return "facility creation success";
