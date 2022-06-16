@@ -1,9 +1,13 @@
+// dependencies
 const MongoClient = require("mongodb").MongoClient; // Connection to MongoDB 
 const User = require("./user");	                    // Import user class
 const Visitor = require("./visitor");				// Import visitor class
 const Admin = require("./admin");                   // Import admin class
+const Facility = require("./facility")              // Import facility class
+const Parking = require("./parking")				// Import parking class
 const jwt = require('jsonwebtoken');                // JWT token		
 
+// connection
 MongoClient.connect( 
 	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
 	//"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
@@ -17,14 +21,14 @@ MongoClient.connect(
 	Admin.injectDB(client);
 	Visitor.injectDB(client);
 })
-
 // web application framework for node.js HTTP applications
 const express = require('express')
-const app = express()
-//const port = 3000 
-const port = process.env.PORT || 3000 
+const app = express() 
+const port = process.env.PORT || 3000 //const port = 3000
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // swagger
 const swaggerUi = require('swagger-ui-express');
@@ -37,357 +41,189 @@ const options = {
 			version: '1.0.0',
 		},
 	},
-	apis: ['./main.js'], //files containing annotations as above
+	apis: ['./main.js'], // files containing annotations as above
 };
 const swaggerSpec = swaggerJsdoc(options);
-console.log(swaggerSpec);
-
+console.log(swaggerSpec); // server settings
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-/////////////////////////////////////////////////////////////
-//user login
-/**
- * @swagger
- * /user/login:
- *   post:
- *     description: User Login
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       401:
- *         description: Invalid username or password
- */
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       properties:
- *         _id:
- *           type: string
- *         username:
- *           type: string
- *         password:
- *           type: string 
- *         phone:
- *           type: string  
- */
-
-///////////////////////////////////////////////////////////////
-// Testing
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Main page
 
 app.get('/', (req, res) => {
-	res.send('Welcome to OUR page !')
+	res.send('Welcome to OUR page !') // maybe u can add details at here
 })
 
-app.get('/test', (req, res) => {
-	res.send('testing... you are good for now')
-})
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////
-// view users (aggregation)
-app.get('/user', async (req, res) => {
-	let view = await User.view()
-	res.send(view);		
-})
+// endpoint = category1/category2/.../function (function)
+// category = visitor, user, admin, facility, parking
+// function = create (C), view (R), update (U), delete (D)
 
-///////////////////////////////////////////////////////////////
-// login
-
-app.post('/user/login', async (req, res) => {								
-	const user = await User.loginuser(req.body);
-	console.log('\nLogin user:', req.body); //check in console
-	if(user == "invalid username" || user == "invalid password")
+///////////////////////////// admin /////////////////////////////
+// login - admin - swagger 
+// login - admin (generate token)
+app.post('/admin/login', async (req,res) =>{
+	const admin = await Admin.loginadmin(req.body);
+	console.log('\nLogin admin:', req.body); //check in console
+	if (admin == "invalid username"|| admin =='invalid password')
 	{
-		console.log('Login status:', user)
+		console.log('Login status', admin)
 		return res.status(401).send("login fail")
 	}
 	else
 	{
 		res.status(200).json({
-			token : generateAccessToken({ //Token will carry the info for 30s and will be used to access the API
-				'login_username': user.login_username,
-				'login_password' : encrypt,
-				'user_name' : user.user_name,
-				'user_phonenumber' : user.user_phonenumber, 
-				'security_id': user.security_id,
-				'role' :' user'
-
+			token:generateAccessToken({
+					'login_username' : admin.login_username,
+					'login_password' : admin.login_password,       // from user.username
+					'security_name' : admin.security_name,
+					'security_phonenumber' : admin.security_phonenumber,	
+					'role' : 'admin'
 			})
-		})	
+		})
 	}
 })
-
-///////////////////////////////////////////////////////////////
-// post + create
-
-app.post('/user/register', async (req, res) => { 							
-	let user = await Admin.createuser(req.body);
-	//check in console
-	console.log('\nRegister user:',req.body);
-	console.log('Registration status:',user);
-
-	if(user == "creation fail")
-	{
-		return res.status(400).send("creation fail")
-	}
-	if(user == "creation success")
-	{
-		return res.status(200).send("creation success")
-	}
-})
-												
-///////////////////////////////////////////////////////////////	
-//delete
-
-app.delete('/user/delete', verifyToken, async (req, res) => {
-	let user = await User.delete(req.user)
-	console.log("\nDelete user:", req.user)
-	console.log("Deletion status:", user)
-
-	if(user == "deletion fail" || user == "invalid username")
-	{
-		return res.status(400).send("deletion fail")
-	}
-	if(user == "deletion success")
-	{
-		return res.status(200).send("deletion success")
-	}
-})		
-
-///////////////////////////////////////////////////////////////
-// patch + update
-
-app.patch('/user/update',verifyToken, async (req, res) => {
-	let user = await User.update(req.user,req.body)
-	console.log("\nUpdate user:", req.body)
-	console.log("Update status:", user)
-
-	if(user == "update fail" || user == "invalid username")
-	{
-		return res.status(400).send("update fail")
-	}
-	if(user == "update success")
-	{
-		return res.status(200).send("update success")
-	}
+// view - swagger 
+// view (use token)
+app.get('/admin/login',async(req,res) =>{
+	let view = await Admin.viewadmin()
+	res.send(view);
 })
 
-///////////////////////////////////////////////////////////////
-// get	//end = json = send
-
-app.get('/user/login',verifyToken, async (req, res) => {
-	console.log(req.user);
-		
-	res.json({
-		"username": req.user.username,
-		"phone": req.user.phone,
-		"role": req.user.role
-	})
-})
-
-app.get('/user/format', async (req, res) => {
-	res.send(
-		"To login an existing user, please enter username and password in JSON format\n" +
-		"To create new user, please enter username, password and phone in JSON format\n" +
-		"To delete the user, use /user/delete endpoint after login\n" +
-		"To update an user, use /user/update endpoint after login with their updating info (eg. phone) in JSON format"
-	)	
-})
-
-///////////////////////////////////////////////////////////////
-// i dont know
-
-app.get('/user/admin', verifyToken, async (req,res) =>{
-	if(req.user.role == 'admin')
-		res.status(200).send('You are admin')
-	else
-		res.status(403).send('You are not admin')
-})
-
-///////////////////////////////////////////////////////////////
-//user +admin
-
-
-app.get('/user/admin', async (req,res) =>{
-	console.log(req.body.role);
-
-	if(req.user.role == 'admin')
-		res.status(200).send('You are admin')
-	else
-		res.status(403).send('You are not admin')
-})
-///////////////////////////////////////////////////////////////
-// post + create
-
-app.post('/user/admin/register', async (req, res) => { 							
-	let admin = await User.createadmin(req.user,req.body);
+// create - user - swagger 
+// create - user (use token)
+app.post('/admin/user/create',verifyToken,async(req,res) =>{
+	let admin = await Admin.createuser(req.token,req.body);
 	//check in console
 	console.log('\nRegister user:',req.body);
 	console.log('Registration status:',admin);
 
-	if(admin == "creation fail")
+	if(admin == "user creation fail")
 	{
-		return res.status(400).send("creation fail")
+		return res.status(400).send("user creation fail")
 	}
-	if(admin == "creation success")
+	else if (admin == "user creation success")
 	{
-		return res.status(200).send("creation success")
-	}
-})
-///////////////////////////////////////////////////////////////
-app.post('user/admin/login', async (req, res) => {								
-	const admin = await admin.login(req.body);
-	//check in console
-	console.log('\nLogin admin:', req.body);
-
-	if(admin == "invalid username" || admin == "invalid password")
-	{
-		console.log('Login status:', admin)
-		return res.status(400).send("admin login fail")
-	}
-	else
-	{
-		console.log('Login detail:', admin)
-		res.status(200).json({
-			_id : admin._id,
-			username : admin.username,
-			phone : admin.phone,
-            role : admin.role,
-			token : generateAccessToken({ 
-                _id: admin._id,
-                username: admin.role,
-             })
-		});
-	}
-	
-})
-
-///////////////////////////////////////////////////////////////
-
-/** 
- * @swagger
- * /user/visitor/{id}:
- *   get:
- *     description: Get visitor by id
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: visitor id
-*/
-///////////////////////////////////////////////////////////////
-
-app.get('/user/visitor/:id',verifyToken, async (req, res) =>{
-	//console.log(req.params);
-	//console.log(req.user);
-	if(req.user.role == 'user')
-	{
-		let visitor = await Visitor.visitorviewaccess(req.params.id);
-		if (visitor)
-			res.status(200).json(visitor)
-		else
-			res.status(404).send("Invalid Visitor Id");
-	} else {
-		res.status(403).send('Unauthorized')
+		return res.status(200).send("user creation success")
 	}
 })
 
-///////////////////////////////////////////////////////////////
-// user + visitor 
-
-// register
-app.post('/user/visitor/register',verifyToken, async (req, res) => { 							
-	let visitor = await User.createvistor(req.user,req.body);
-	//check in console
-	console.log('\nRegister user:',req.body);
-	console.log('Registration status:',visitor);
-
-	if(visitor == "visitor creation fail")
-	{
-		return res.status(400).send("visitor creation fail")
-	}
-	if(visitor == "visitor creation success")
-	{
-		return res.status(200).send("visitor creation success")
-	}
+// view - user - swagger 
+// view - user (use token)
+app.get('/admin/user/login',async(req,res) =>{
+	let view = await Admin.viewuser()
+	res.send(view);
 })
 
-//delete
-app.delete('/user/visitor/delete',verifyToken, async(req, res) =>{
-	let visitor = await User.deletevisitor(req.user,req.body);
-	//check with console
-	console.log('\nRegister user:', req.body);
-	console.log('Registration status:', visitor);
 
-	if (visitor == "visitor creation fail")
-	{
-		return res.status(400).send("visitor deletion fail")
-	}
-	if (visitor == "visitor deletion succeess")
-	{
-		return res.status(200).send("visitor deletion success")
-	}
-})
-////////////////////////////////////////////////////////////////////
-//View Visitor
-app.get('/user/visitor', async (req, res) => {
-	let view = await User.viewvisitor()
-	res.send(view);		
-})
-////////////////////////////////////////////////////////////////////////
-//update visitor
-app.patch('/user/visitor/update',verifyToken, async(req, res) =>{
-	let visitor = await User.updatevisitor(req.user,req.body);
-	//check with console
-	console.log('\nRegister user:', req.body);
-	console.log('Registration status:', visitor);
+// delete - user - swagger 
+// delete - user (use token)
+app.delete('admin/user/delete', verifyToken, async (req, res) => {
+	let admin = await Admin.deleteuser(req.user)
+	console.log("\nDelete user:", req.user)
+	console.log("Deletion status:", admin)
 
-	if (visitor == "visitor creation fail")
+	if(admin == "invalid username")
 	{
-		return res.status(400).send("visitor update fail")
+		return res.status(400).send("deletion fail")
 	}
-	if (visitor == "visitor update succeess")
+	if(admin =="user deletion success")
 	{
-		return res.status(200).send("visitor update success")
+		return res.status(200).send("user deletion success")
 	}
-})
+})		
 
-///////////////////////////////////////////////////////////////
+// update - user - swagger
+// update - user (use token)
+
+// view - visitor - swagger 
+// view - visitor (use token)
+
+// update - visitor - permission - swagger 
+// update - visitor - permission (use token)
+
+// update - facility - permission - swagger
+// update - facility - permission (use token)
+
+// update - parking - permission - swagger
+// update - parking - permission (use token)
+
+///////////////////////////// user /////////////////////////////
+
+// login - user - swagger 
+// login - user (generate token)
+
+// create - visitor - swagger
+// create - visitor (use token)
+
+// update - visitor - swagger
+// update - visitor (use token)
+
+// delete - visitor - swagger
+// delete - visitor (use token)
+
+// view - visitor - swagger
+// view - visitor (use token)
+
+//
+
+// create - facility - swagger
+// create - facility (use token)
+
+// update - facility - detail - swagger
+// update - facility - detail (use token)
+
+//
+
+// create - parking - swagger
+// create - parking (use token)
+
+// update - parking - detail - swagger
+// update - parking - detail (use token)
+
+///////////////////////////// visitor /////////////////////////////
+
+// view - access - swagger
+// view - access (use token)
+
+// view - facility - swagger
+// view - facility (use token)
+
+// view - parking - swagger
+// view - parking (use token)
+
+///////////////////////////// facility /////////////////////////////
+
+// everyone can use
+// view - facility - swagger
+// view - facility (use token)
+
+// user and admin can use
+// delete - facility - swagger 
+// delete - facility (use token)  
+
+///////////////////////////// parking /////////////////////////////
+
+// everyone can use
+// view - parking - swagger
+// view - parking (use token)
+
+// user and admin can use
+// delete - parking - swagger 
+// delete - parking (use token)  
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Print server on console
 
 app.listen(port, () => {
 	console.log(`Listening to the server on ${port}`)
 })
 
-///////////////////////////////////////////////////////////////
-// 200 = OK, 201 = created
-// 400 = bad request, 401 = authorization fail, 403 = forbidden, 404 = Not found
-///////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////
-//jwt - authentication and authorization
+///////////////////////////////jwt - authentication and authorization////////////////////////////
 
 function generateAccessToken(payload) {
-	return jwt.sign(payload, "my-super-secret", { expiresIn: '1h'});
+	return jwt.sign(payload, "my-super-secret", { expiresIn: '1h'}); // set expire time duration
 }
 
 function verifyToken(req, res, next) {
@@ -402,7 +238,12 @@ function verifyToken(req, res, next) {
 		{
 			return res.sendStatus(403);
 		}
-		req.user = user;
+		req.token = user;		// to access the token, use this variable
 		next();
 	});
 }
+
+///////////////////////////////////////////////////////////////////////////////////
+// 200 = OK, 201 = created														 //
+// 400 = bad request, 401 = authorization fail, 403 = forbidden, 404 = Not found //
+///////////////////////////////////////////////////////////////////////////////////

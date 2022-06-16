@@ -12,6 +12,15 @@ const token = {						// user sample
     role : "user",
 }
 
+const admintoken = {
+	"_id":"62aafc8472263b2a3ed6e658",
+	"login_username":"usertest2",
+	"login_password":"password1",
+	"security_name":"secure_tan",
+	"security_phonenumber":"011-1111111",
+	"role":"admin"
+}
+
 const badtoken = {						// bad sample
     _id : "badid",
 	security_id:"bad",
@@ -83,6 +92,19 @@ describe("VMS - TDD - facility test", () => {
 	// 	expect(res).toBe("facility update fail");
 	// })
 
+	// ///////////////////////////////////////////////////////////////
+	// 			// update permission - facility //
+
+	// test("Update facility permission - success", async () => {
+	// 	const res = await Facility.updatefacilitypermission(admintoken,detail);
+	// 	expect(res).toBe("facility permission update success");
+	// })
+
+    // test("Update facility permission - fail", async () => {
+	// 	const res = await Facility.updatefacilitypermission(token,detail);
+	// 	expect(res).toBe("facility permission update fail");
+	// })
+
     // ///////////////////////////////////////////////////////////////
 	// 			// delete - parking //
 
@@ -91,8 +113,8 @@ describe("VMS - TDD - facility test", () => {
 	// 	expect(res).toBe("facility deletion fail");
 	// })
 
-	test("delete facility - success", async () => {
-		const res = await Facility.deletefacility(token);
-		expect(res).toBe("facility deletion success");
-	})
+	// test("delete facility - success", async () => {
+	// 	const res = await Facility.deletefacility(token);
+	// 	expect(res).toBe("facility deletion success");
+	// })
 });

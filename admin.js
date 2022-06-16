@@ -121,6 +121,7 @@ class Admin {
 			}
 		});	
 		// search for duplicate
+		//console.log(user.login_username)
 		return users.findOne({								
 			'login_username': user.login_username				
 		}).then(async res =>{

@@ -1,5 +1,8 @@
 //////////////////main function of user//////////////////////
 let users, visitors;
+const { hash } = require("bcrypt");
+const bcrypt = require("bcryptjs")
+const saltRounds = 10;
 ////////////////////////////////////////////////////////////
 
 class User {
@@ -31,17 +34,6 @@ class User {
 			}
 		})
 	}
-
-	// await users.updateOne(	
-				// {
-				// 	'login_username' : user.login_username 
-				// }
-				// , 
-				// { 
-				// 	'$set' : { 
-				// 		'visitor_id' : res.insertedId.toString()
-				// 	} 
-				// });
 
 	////////////////////////////////////////////////////////////
 

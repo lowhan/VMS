@@ -73,6 +73,31 @@ class Facility {
 		})	
 	}
 
+	// update facility permission for admin
+	static async updatefacilitypermission(token,detail) {			// token = with admin role	
+		return facilities.findOne({									// detail = which visitor's permission is allowed
+			$and : 	
+			[
+				{ 'visitor_id': detail.visitor_id },
+				{ 'security_id': token.security_id }
+			]							
+		}).then(async facility =>{
+			if (facility) 
+			{
+				await facilities.updateOne({'user_id' : facility.user_id},{ // update user to database
+					$set:{
+						'facility_access_permission' : facility.facility			 
+					}	 							
+				})
+				return "facility permission update success";
+			}
+			else
+			{
+				return "facility permission update fail"; 				 
+			}
+		})	
+	}
+
     // delete facility
 	static async deletefacility(detail) {		
 		return facilities.findOne({ 'user_id' : detail._id }).then(async facility =>{
