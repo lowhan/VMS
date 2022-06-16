@@ -300,7 +300,7 @@ app.get('/user/visitor/:id',verifyToken, async (req, res) =>{
 	//console.log(req.user);
 	if(req.user.role == 'user')
 	{
-		let visitor = await Visitor.getbyid(req.params.id);
+		let visitor = await Visitor.visitorviewaccess(req.params.id);
 		if (visitor)
 			res.status(200).json(visitor)
 		else
