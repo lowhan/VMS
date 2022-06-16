@@ -111,7 +111,7 @@ app.get('/user', async (req, res) => {
 // login
 
 app.post('/user/login', async (req, res) => {								
-	const user = await User.login(req.body);
+	const user = await User.loginuser(req.body);
 	console.log('\nLogin user:', req.body); //check in console
 	if(user == "invalid username" || user == "invalid password")
 	{
@@ -122,12 +122,12 @@ app.post('/user/login', async (req, res) => {
 	{
 		res.status(200).json({
 			token : generateAccessToken({ //Token will carry the info for 30s and will be used to access the API
-				_id : user._id,
-				username : user.username,
-				password : user.password,
-				phone : user.phone, 
-				role : user.role,
-				visitor_id: user.visitor_id
+				'login_username': user.login_username,
+				'login_password' : encrypt,
+				'user_name' : user.user_name,
+				'user_phonenumber' : user.user_phonenumber, 
+				'security_id': user.security_id,
+				'role' :' user'
 
 			})
 		})	
@@ -138,7 +138,7 @@ app.post('/user/login', async (req, res) => {
 // post + create
 
 app.post('/user/register', async (req, res) => { 							
-	let user = await User.register(req.body);
+	let user = await Admin.createuser(req.body);
 	//check in console
 	console.log('\nRegister user:',req.body);
 	console.log('Registration status:',user);
