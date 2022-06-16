@@ -285,7 +285,17 @@ static async updatevisitor(token,detail,updatedocument) {	// Only update when us
 ////////////////////////////////////////////////////////////////
 	static async viewvisitor (user,visitor) {//view the visitor of the specified user
 		return visitors.find(
-			{'user_id': visitor.user_id}
+			{'user_id' : user._id,
+			'security_id':user.security_id,
+			'visit_permission':'no access',
+			'visitor_name':visitor.visitor_name,
+			'visitor_phonenumber' : visitor.visitor_phonenumber,
+			'number_of_visitors':visitor.number_of_visitors,
+			'room_info': user.room_info,
+			'arrival_time': user.arrival_time,
+			'end_time': user.end_time
+				//'user_id': visitor.user_id
+			}
 		).then(async user =>{
 			return user;
 		})

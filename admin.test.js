@@ -57,6 +57,7 @@ describe("Admin Account Management", () => {
 		await client.close();
 	})
 
+<<<<<<< Updated upstream
 	// admin
 	// create
 	// test("Admin create - success", async () => {
@@ -145,3 +146,87 @@ describe("Admin Account Management", () => {
 	// 	expect(res).toBe("invalid username");
 	// })
 });
+=======
+    ///////////////////////////////////////////////////////////////
+					// admin : create - registration //
+//     test("User login - success", async () => {
+// 		const res = await User.login(newsample_admin);
+// 		expect(res.username).toBe(newsample.username);
+// 		expect(res.password).toEqual(expect.any(String)); 
+// 	})
+
+// 	///////////////////////////////////////////////////////////////
+// 					// user : create - registration //
+
+// 	test("User Registration - success - new username", async () => {
+// 		const res = await User.register(newsample_user);
+// 		expect(res).toBe("user creation success");
+// 	})
+
+// 	test("User Registration - fail - duplicate username", async () => {
+// 		const res = await User.register(badpasswordsample_user);
+// 		expect(res).toBe("user creation fail");
+// 	})
+
+// 	///////////////////////////////////////////////////////////////
+// 					// read - login & return data  //
+
+// 	test("User login - success", async () => {
+// 		const res = await User.login(newsample_user);
+// 		expect(res.username).toBe(newsample.username);
+// 		expect(res.password).toEqual(expect.any(String)); 
+// 	})
+
+// 	test("User login - invalid username", async () => {
+// 		const res = await User.login(badusersample_user);
+// 		expect(res).toBe("invalid username");
+// 	})
+
+// 	test("User login - invalid password", async () => {
+// 		const res = await User.login(badpasswordsample_user);
+// 		expect(res).toBe("invalid password");
+// 	})
+
+// 	///////////////////////////////////////////////////////////////
+// 					// update - match & update //
+
+// 	test("Update info - success", async () => {
+// 		const res = await User.update(updatesample_user);
+// 		expect(res).toBe("user update success");
+// 	})
+
+// 	test("Update info - fail", async () => {
+// 		const res = await User.update(badpasswordsample_user);
+// 		try 
+// 		{
+// 			expect(res).toBe("user update fail");     //wrong password
+// 		}
+// 		catch
+// 		{
+// 			expect(res).toBe("invalid username");  //no user found
+// 		}
+// 	})
+
+// 	///////////////////////////////////////////////////////////////
+// 					// delete - match & delete //
+
+// 	test("Delete username - fail", async () => {
+// 		const res = await User.delete(badpasswordsample_user);
+// 		try 
+// 		{
+// 			expect(res).toBe("user deletion fail");     //wrong password
+// 		}
+// 		catch
+// 		{
+// 			expect(res).toBe("invalid username");  //no user found
+// 		}
+// 	})
+	
+// 	test("Delete username - success", async () => {
+// 		const res = await User.delete(newsample_user);
+// 		expect(res).toBe("user deletion success");
+// 	})
+
+// 	///////////////////////////////////////////////////////////////					
+// });
+>>>>>>> Stashed changes

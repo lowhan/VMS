@@ -87,10 +87,10 @@ describe("VMS - TDD - parking test", () => {
     // ///////////////////////////////////////////////////////////////
 	// 			// delete - parking //
 
-	test("delete parking - success", async () => {
-		const res = await Parking.deleteparking(token);
-		expect(res).toBe("parking deletion success");
-	})
+	// test("delete parking - success", async () => {
+	// 	const res = await Parking.deleteparking(token);
+	// 	expect(res).toBe("parking deletion success");
+	// })
 
     // test("delete parking - fail", async () => {
 	// 	const res = await Parking.deleteparking(detail);
