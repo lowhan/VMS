@@ -14,20 +14,6 @@ class Visitor {
 			return visitoraccess;
 		});
 	}
-
-	static async visitorviewfacility(userId) {
-		return await facility.findOne({ 'user_id' : userId }).then(async facilityaccess => 
-		{
-			return facilityaccess;
-		});
-	}
-
-	static async visitorviewparking(userId) {
-		return await parking.findOne({ 'user_id' : userId }).then(async parkingaccess => 
-		{
-			return parkingaccess;
-		});
-	}
 }
 
 module.exports = Visitor;

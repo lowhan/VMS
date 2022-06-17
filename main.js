@@ -373,10 +373,14 @@ app.post('/user/login', async (req,res) =>{
 	{
 		res.status(200).json({
 			token : generateAccessToken({
+<<<<<<< HEAD
 					'_id': user._id,
+=======
+					'_id' : user._id,
+>>>>>>> 1603ed95b68476f56dfd420e26633a9e48904934
 					'security_id' : user.security_id,
 					'login_username' : user.login_username,
-					'login_password' : user.login_password,       // from user.username
+					'login_password' : user.login_password,       
 					'user_name' : user.user_name,
 					'user_phonenumber' : user.user_phonenumber,	
 					'role' : user.role
@@ -615,17 +619,17 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 	{
 		let user = await Parking.updateparkingdetail(req.token,req.body);
 		console.log('\nParking update:',req.body);
-		console.log('Parking registration status:',user);
+		console.log('Parking update status:',user);
 
 		try
 		{
-			if(user == "parking creation fail")
+			if(user == "parking update fail")
 			{
-				return res.status(400).send("parking creation fail")
+				return res.status(400).send("parking update fail")
 			}
-			else if (user == "parking creation success")
+			else if (user == "parking update success")
 			{
-				return res.status(200).send("parking creation success")
+				return res.status(200).send("parking update success")
 			}
 		}
 		catch (err)
@@ -642,46 +646,121 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 ///////////////////////////// visitor /////////////////////////////
 
 // view - access - swagger
-// view - access (use token)
+// view - access
 
-
-// view - facility - swagger
-// view - facility (use token)
-
-// view - parking - swagger
-// view - parking (use token)
-
-///////////////////////////// facility /////////////////////////////
-
-// everyone can use
-// view - facility - swagger
-// view - facility (use token)
-//admin view facility
-app.get('/facility/view',verifyToken,async(req,res) =>{
-	let view = await Facility.viewfacility(req.token)
+app.get('/visitor/view', async(req,res) =>{
+	let visitor = await Visitor.visitorviewaccess(req.body)
 
 	try
 	{
-		res.send(view);
+		res.status(200).send(visitor);
 	}
 	catch(err)
 	{
 		return res.status(404).send(err)
 	}
 })
+
+
+///////////////////////////// facility /////////////////////////////
+
+// everyone can use
+// view - facility - swagger
+// view - facility (use token)
+app.get('/facility/view',verifyToken,async(req,res) =>{
+	let view = await Facility.viewfacility(req.token)
+
+	try
+	{
+		res.status(200).send(view);
+	}
+	catch(err)
+	{
+		return res.status(404).send(err)
+	}
+})
+
 // user and admin can use
 // delete - facility - swagger 
 // delete - facility (use token)  
+app.delete('/facility/delete',verifyToken,async(req,res) =>{
+	if(req.token.role == 'user'||req.token.role=='admin')
+	{
+		let facility = await Facility.deletefacility(req.body)
+		console.log('\nFacility delete:',req.body);
+		console.log('Facility delete status:',facility);
+
+		try
+		{
+			if(facility == "facility deletion fail")
+			{
+				return res.status(400).send("facility deletion fail")
+			}
+			else if (facility == "facility deletion success")
+			{
+				return res.status(200).send("facility deletion success")
+			}
+		}
+		catch (err)
+		{
+			return res.status(404).send(err)
+		}
+	}
+	else
+	{
+		return res.status(401).send("Unauthorized")
+	}
+})
 
 ///////////////////////////// parking /////////////////////////////
 
 // everyone can use
 // view - parking - swagger
 // view - parking (use token)
+app.get('/parking/view',verifyToken,async(req,res) =>{
+	let view = await Parking.viewparking(req.token)
+
+	try
+	{
+		res.status(200).send(view);
+	}
+	catch(err)
+	{
+		return res.status(404).send(err)
+	}
+})
 
 // user and admin can use
 // delete - parking - swagger 
 // delete - parking (use token)  
+app.delete('/parking/delete',verifyToken,async(req,res) =>{
+	if(req.token.role == 'user'||req.token.role == 'admin')
+	{
+		let parking = await Parking.deleteparking(req.body)
+		console.log('\nParking delete:',req.body);
+		console.log('Parking delete status:',parking);
+
+		try
+		{
+			if(parking == "parking deletion fail")
+			{
+				return res.status(400).send("parking deletion fail")
+			}
+			else if (parking == "parking deletion success")
+			{
+				return res.status(200).send("parking deletion success")
+			}
+		}
+		catch (err)
+		{
+			return res.status(404).send(err)
+		}
+	}
+	else
+	{
+		return res.status(401).send("Unauthorized")
+	}
+})
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Print server on console
