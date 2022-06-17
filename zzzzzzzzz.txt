@@ -1,0 +1,21 @@
+	definition: 
+	{
+		openapi:'3.0.3',
+		info: {
+			title:'Visitor Management System API',
+			version: '1.0.0',
+		},
+	},
+		securitySchemes: {
+			Bearer:
+			{
+				scheme: 'bearer',
+				type: 'SecuritySchemeType.HTTP',
+				name: 'bearerAuth',
+				in: 'header',
+				header: {
+					'Authorization': 'Bearer <token>'
+				}
+			},
+		security: [{ Bearer: [] }]
+	},

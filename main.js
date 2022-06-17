@@ -25,46 +25,66 @@ MongoClient.connect(
 })
 
 // web application framework for node.js HTTP applications
-const express = require('express')
-const app = express() 
-const port = process.env.PORT || 3000 //const port = 3000
+const express = require('express');
+const app = express() ;
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const port = process.env.PORT || 3000; //const port = 3000
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // swagger
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
-const options = {
-	definition: {
-		openapi:'3.0.0',
+const option = {
+	swaggerDefinition: {
+		openapi: '3.0.0',
 		info: {
-			title:'Visitor Management System API',
-			version: '1.0.0',
+			title: 'Parking Management System',
+			description: 'Parking Management System',
+			contacts: {
+				name: 'Parking Management System',
+			},
+			servers: ["http://localhost:3000"],
 		},
 	},
-	components: {
-		securitySchemes: {
-			BearerAuth:
-			{
-				type: 'http',
-				scheme: 'bearer',
-				bearerFormat: 'JWT',
-				in: 'header',
-				headers: {
-					'Authorization': 'Bearer',
-				}
-			},
+	// ['.routes/*.js]
+	securitySchemes: {
+		BearerAuth:
+		{
+			type: 'http',
+			scheme: 'bearer',
+			bearerFormat: 'JWT',
+			in: 'header',
+			headers: {
+				'Authorization': 'Bearer',
+			}
 		},
 	},
 	security: [{ BearerAuth: [] }],
-	apis: ['./main.js'], // files containing annotations as above
+	apis: ['./main.js']
 };
-const swaggerSpec = swaggerJsdoc(options);
+const swaggerSpec = swaggerJsDoc(option);
 console.log(swaggerSpec); // server settings
 
-app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// components: {
+		// securitySchemes: {
+		// 	BearerAuth:
+		// 	{
+		// 		type: 'http',
+		// 		scheme: 'bearer',
+		// 		bearerFormat: 'JWT',
+		// 		in: 'header',
+		// 		headers: {
+		// 			'Authorization': 'Bearer',
+		// 		}
+		// 	},
+		// },
+		// security: [{ BearerAuth: [] }]
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main page
@@ -83,46 +103,46 @@ app.get('/', (req, res) => {
 // login - admin - swagger 
 // need to type - login_username, login_password
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     token:
- *       type: object
- *       properties:
- *         token: 
- *           type: string
- */
+// /**
+//  * @swagger
+//  * components:
+//  *   schemas:
+//  *     token:
+//  *       type: object
+//  *       properties:
+//  *         token: 
+//  *           type: string
+//  */
 
- /**
- * @swagger
- * /admin/login:
- *   post:
- *     tags:
- *       - login
- *     summary: Login as admin
- *     description: "Login with an admin account"
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: 
- *             type: object
- *             properties:
- *               login_username: 
- *                 type: string
- *               login_password: 
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/token'
- *       400:
- *         description: Invalid username or password
- */
+//  /**
+//  * @swagger
+//  * /admin/login:
+//  *   post:
+//  *     tags:
+//  *       - login
+//  *     summary: Login as admin
+//  *     description: "Login with an admin account"
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema: 
+//  *             type: object
+//  *             properties:
+//  *               login_username: 
+//  *                 type: string
+//  *               login_password: 
+//  *                 type: string
+//  *     responses:
+//  *       200:
+//  *         description: Successful login
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               $ref: '#/components/schemas/token'
+//  *       400:
+//  *         description: Invalid username or password
+//  */
 
 // login - admin (generate token)
 app.post('/admin/login', async (req,res) =>{
@@ -149,25 +169,25 @@ app.post('/admin/login', async (req,res) =>{
 	}
 })
 
-// view - swagger 
-// need to type - nothing
- /**
- * @swagger
- * /admin/view:
- *   get:
- *     tags:
- *       - general
- *     summary: View available admin (everyone can access)
- *     description: "View every admin account"
- *     responses:
- *       200:
- *         description: "View admin successful"
- *         content:
- *           schema:
- *             type: array
- *       401:
- *         description: "No admin exists in database"
- */
+// // view - swagger 
+// // need to type - nothing
+//  /**
+//  * @swagger
+//  * /admin/view:
+//  *   get:
+//  *     tags:
+//  *       - general
+//  *     summary: View available admin (everyone can access)
+//  *     description: "View every admin account"
+//  *     responses:
+//  *       200:
+//  *         description: "View admin successful"
+//  *         content:
+//  *           schema:
+//  *             type: array
+//  *       401:
+//  *         description: "No admin exists in database"
+//  */
 
 // view (use token)
 app.get('/admin/view',async(req,res) =>{
@@ -235,7 +255,7 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
  *   /admin/user/view:
  *     get:
  *       security:
- *         - BearerAuth: []
+ *         - Bearer: []
  *       tags:
  *         - admin
  *       summary: View user 
@@ -448,35 +468,35 @@ app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res)
 
 // login - user - swagger
 // need to type - login_username, login_password
- /**
- * @swagger
- * /user/login:
- *   post:
- *     tags:
- *       - login
- *     summary: Login as user
- *     description: "Login with an user account"
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: 
- *             type: object
- *             properties:
- *               login_username: 
- *                 type: string
- *               login_password: 
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/token'
- *       400:
- *         description: Invalid username or password
- */
+//  /**
+//  * @swagger
+//  * /user/login:
+//  *   post:
+//  *     tags:
+//  *       - login
+//  *     summary: Login as user
+//  *     description: "Login with an user account"
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema: 
+//  *             type: object
+//  *             properties:
+//  *               login_username: 
+//  *                 type: string
+//  *               login_password: 
+//  *                 type: string
+//  *     responses:
+//  *       200:
+//  *         description: Successful login
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               $ref: '#/components/schemas/token'
+//  *       400:
+//  *         description: Invalid username or password
+//  */
 
 // login - user (generate token)
 app.post('/user/login', async (req,res) =>{
@@ -781,13 +801,13 @@ app.get('/visitor/view', async(req,res) =>{
 
 // everyone can use
 // view - facility - swagger
-// view - facility (use token)
-app.get('/facility/view',verifyToken,async(req,res) =>{
-	let view = await Facility.viewfacility(req.token)
+// view - facility 
+app.get('/facility/view', async(req,res) =>{
+	let view = await Facility.viewfacility(req.body) // _id : target
 
 	try
 	{
-		return res.status(200).send(view);
+		return res.status(200).send(view); 
 	}
 	catch(err)
 	{
@@ -831,9 +851,9 @@ app.delete('/facility/delete',verifyToken,async(req,res) =>{
 
 // everyone can use
 // view - parking - swagger
-// view - parking (use token)
-app.get('/parking/view',verifyToken,async(req,res) =>{
-	let view = await Parking.viewparking(req.token)
+// view - parking 
+app.get('/parking/view',async(req,res) =>{
+	let view = await Parking.viewparking(req.body) // _id : target
 
 	try
 	{
