@@ -38,9 +38,9 @@ class Parking {
 		return parkings.findOne({								 
 			$or : 
 			[
-				{ 'user_id': token.user_id },	
-				{ 'visitor_id': token.user_id },
-				{ 'security_id': token.user_id }
+				{ 'user_id': token._id },	
+				{ 'visitor_id': token._id },
+				{ 'security_id': token._id }
 			]			
 		}).then(async parking =>{
 			if (parking) 
@@ -62,8 +62,7 @@ class Parking {
 			if (parking) 
 			{
 				await parkings.updateOne({'user_id' : parking.user_id},{ // update user to database
-					$set:{
-						'visitor_id' : detail.visitor_id, 			 
+					$set:{			 
 						'carplate_number': detail.carplate_number,
 						'parking_lot': detail.parking_lot,
 						'arrival_time': detail.arrival_time,
@@ -84,7 +83,11 @@ class Parking {
 		return parkings.findOne({									// detail = which visitor's permission is allowed
 			$and : 	
 			[
+<<<<<<< Updated upstream
 				{ 'user_id': detail.user_id },
+=======
+				{ 'visitor_id': detail.user_id },
+>>>>>>> Stashed changes
 				{ 'security_id': token.security_id }
 			]							
 		}).then(async parking =>{

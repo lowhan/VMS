@@ -1,4 +1,3 @@
-
 // dependencies
 const MongoClient = require("mongodb").MongoClient; // Connection to MongoDB 
 const User = require("./user");	                    // Import user class
@@ -11,7 +10,6 @@ const jwt = require('jsonwebtoken');                // JWT token
 // connection
 MongoClient.connect( 
 	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
-	//"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -39,15 +37,18 @@ app.use(express.urlencoded({ extended: false }))
 
 const port = process.env.PORT || 3000; //const port = 3000
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // swagger
 const option = {
 	definition: {
 		openapi:'3.0.0',
 		info: {
-			title: 'Parking Management System',
-			description: 'Parking Management System',
+			title: 'Visitor Management System',
+			description: 
+				'This is a simple visitor management system that can be applied on the university '+
+				'student to invite their family or friend to come over here and security guard in the' +
+				'uni will act as the admin of the system to control most of the functions'
+			,
 			servers: ["http://localhost:3000"],
 		},
 		components: {
@@ -61,6 +62,7 @@ const option = {
 				},
 			},
 		},
+		tags:['login','general','admin','user','admin/user']
 	},
 	apis: ['./main.js']
 };
@@ -84,9 +86,9 @@ app.get('/', (req, res) => {
 // function = create (C), view (R), update (U), delete (D)
 
 ///////////////////////////// admin /////////////////////////////
+
 // login - admin - swagger 
 // need to type - login_username, login_password
-
 /**
  * @swagger
  * components:
@@ -98,34 +100,35 @@ app.get('/', (req, res) => {
  *           type: string
  */
 
- /**
+ /**                                
  * @swagger
- * /admin/login:
- *   post:
- *     tags:
- *       - login
- *     summary: Login as admin
- *     description: "Login with an admin account"
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema: 
- *             type: object
- *             properties:
- *               login_username: 
- *                 type: string
- *               login_password: 
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful login
+ * paths:
+ *   /admin/login:
+ *     post:
+ *       tags:
+ *         - login
+ *       summary: Login as admin
+ *       description: "Login with an admin account"
+ *       requestBody:
+ *         required: true
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/token'
- *       400:
- *         description: Invalid username or password
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 login_username: 
+ *                   type: string
+ *                 login_password: 
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: Successful login
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/token'
+ *         400:
+ *           description: Invalid username or password
  */
 
 // login - admin (generate token)
@@ -158,20 +161,21 @@ app.post('/admin/login', async (req,res) =>{
 // need to type - nothing
  /**
  * @swagger
- * /admin/view:
- *   get:
- *     tags:
- *       - general
- *     summary: View available admin (everyone can access)
- *     description: "View every admin account"
- *     responses:
- *       200:
- *         description: "View admin successful"
- *         content:
- *           schema:
- *             type: array
- *       401:
- *         description: "No admin exists in database"
+ * paths:
+ *   /admin/view:
+ *     get:
+ *       tags:
+ *         - general
+ *       summary: View available admin (everyone can access)
+ *       description: "View every admin account"
+ *       responses:
+ *         200:
+ *           description: "View admin successful"
+ *           content:
+ *             schema:
+ *               type: array
+ *         401:
+ *           description: "No admin exists in database"
  */
 
 // view (use token)
@@ -182,6 +186,43 @@ app.get('/admin/view',async(req,res) =>{
 
 // create - user - swagger 
 // need to type - login_username, login_password, user_name, user_phonenumber
+ 
+ /**
+ * @swagger
+ * paths:
+ *   /admin/user/create:
+ *     post:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: Create user 
+ *       description: "Create a new user account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 login_username: 
+ *                   type: string
+ *                 login_password: 
+ *                   type: string
+ *                 user_name:
+ *                   type: string
+ *                 user_phonenumber:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "user creation success"
+ *         400:
+ *           description: "user creation fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
 
 // create - user (use token)
 app.post('/admin/user/create',verifyToken,async(req,res) =>{
@@ -204,7 +245,7 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -271,6 +312,37 @@ app.get('/admin/user/view',verifyToken,async(req,res) =>{
 // delete - user - swagger 
 // need to type - login_username 
 
+/**
+ * @swagger
+ * paths:
+ *   /admin/user/delete:
+ *     delete:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: Delete user (put a target user)
+ *       description: "Delete a user account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 login_username: 
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "user deletion success"
+ *         400:
+ *           description: "user deletion fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // delete - user (use token)
 app.delete('/admin/user/delete', verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
@@ -292,7 +364,7 @@ app.delete('/admin/user/delete', verifyToken, async (req, res) => {
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -304,19 +376,54 @@ app.delete('/admin/user/delete', verifyToken, async (req, res) => {
 // update - user - swagger
 // need to type - login_username (target), user_name , user_phonenumber
 
+/**
+ * @swagger
+ * paths:
+ *   /admin/user/update:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: Update user (put a target user and their info)
+ *       description: "Update a user account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 login_username: 
+ *                   type: string
+ *                 user_name:
+ *                   type: string
+ *                 user_phonenumber:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "user update success"
+ *         400:
+ *           description: "user update fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // update - user (use token)
 app.patch('/admin/user/update',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
 		let admin = await Admin.updateuser(req.body)
 		console.log("\nUpdate user:", req.body)
-		console.log("Updation status:", admin)
+		console.log("Update status:", admin)
 
 		try
 		{
 			if(admin == "invalid username")
 			{
-				return res.status(400).send("user updation fail")
+				return res.status(400).send("user update fail")
 			}
 			else if(admin =="user update success")
 			{
@@ -325,7 +432,7 @@ app.patch('/admin/user/update',verifyToken, async (req, res) => {
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -336,6 +443,27 @@ app.patch('/admin/user/update',verifyToken, async (req, res) => {
 
 // view - visitor - swagger 
 // need to type - nothing 
+
+/**
+ * @swagger
+ * paths:
+ *   /admin/visitor/view:
+ *     get:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: View visitor 
+ *       description: "View every visitor account"
+ *       responses:
+ *         200:
+ *           description: "View visitor successful"
+ *           content:
+ *             schema:
+ *               type: array
+ *         401:
+ *           description: "Unauthorised"
+ */
 
 // view - visitor (use token)
 app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
@@ -351,7 +479,38 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
 })
 
 // update - visitor - permission - swagger 
-// need to type
+// need to type - user_id
+
+/**
+ * @swagger
+ * paths:
+ *   /admin/visitor/updatepermission:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: Update visit permission (put a user id to allow their visitor)
+ *       description: "Update a visitor account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 user_id: 
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "user update permission success"
+ *         400:
+ *           description: "user update permission fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
 
 // update - visitor - permission (use token)
 app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
@@ -359,13 +518,13 @@ app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
 	{
 		let admin = await Admin.updateuservisitor(req.body)
 		console.log("\nUpdate visitor:", req.body)
-		console.log("Updation status:", admin)
+		console.log("Update status:", admin)
 
 		try
 		{
 			if(admin == "invalid username")
 			{
-				return res.status(400).send("visitor updation fail")
+				return res.status(400).send("user update permission fail")
 			}
 			else if(admin =="user update permission success")
 			{
@@ -374,7 +533,7 @@ app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -384,7 +543,38 @@ app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
 })		
 
 // update - facility - permission - swagger
-// need to type
+// need to type - visitor_id
+
+/**
+ * @swagger
+ * paths:
+ *   /admin/facility/updatefacilitypermission:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: Update facility permission (put a visitor id to allow their visitor)
+ *       description: "Update facility"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 user_id: 
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "facility permission update success"
+ *         400:
+ *           description: "facility permission update fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
 
 // update - facility - permission (use token)
 app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, res) => {
@@ -392,7 +582,7 @@ app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, re
 	{
 		let admin = await Facility.updatefacilitypermission(req.token,req.body)
 		console.log("\nUpdate facility permission:", req.body)
-		console.log("Updation status:", admin)
+		console.log("Update status:", admin)
 
 		try
 		{
@@ -407,7 +597,7 @@ app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, re
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -417,7 +607,38 @@ app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, re
 })	
 
 // update - parking - permission - swagger
-// need to type
+// need to type - user_id
+
+/**
+ * @swagger
+ * paths:
+ *   /admin/parking/updateparkingpermission:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin
+ *       summary: Update parking permission (put a user id to allow their visitor)
+ *       description: "Update parking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 user_id: 
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "parking permission update success"
+ *         400:
+ *           description: "parking permission update fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
 
 // update - parking - permission (use token)
 app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res) => {
@@ -425,7 +646,7 @@ app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res)
 	{
 		let admin = await Parking.updateparkingpermission(req.token,req.body)
 		console.log("\nUpdate parking permission:", req.body)
-		console.log("Updation status:", admin)
+		console.log("Update status:", admin)
 
 		try
 		{
@@ -440,7 +661,7 @@ app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res)
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -510,7 +731,48 @@ app.post('/user/login', async (req,res) =>{
 })
 
 // create - visitor - swagger
-// need to type - 
+// need to type - visitor_name, visitor_phonenumber, number_of_visitors, room_info, arrival_time, end_time
+
+/**
+ * @swagger
+ * paths:
+ *   /user/visitor/create:
+ *     post:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Create visitor 
+ *       description: "Create a new visitor account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 visitor_name:
+ *                   type: string
+ *                 visitor_phonenumber:
+ *                   type: string
+ *                 number_of_visitors:
+ *                   type: number
+ *                 room_info:
+ *                   type: string
+ *                 arrival_time:
+ *                   type: string
+ *                 end_time:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "visitor creation success"
+ *         400:
+ *           description: "visitor creation fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
 
 // create - visitor (use token)
 app.post('/user/visitor/create',verifyToken,async(req,res) =>{
@@ -522,18 +784,18 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
 
 		try
 		{
-			if(user == "user creation fail")
+			if(user == "visitor creation fail")
 			{
 				return res.status(400).send("visitor creation fail")
 			}
-			else if (user == "user creation success")
+			else if (user == "visitor creation success")
 			{
 				return res.status(200).send("visitor creation success")
 			}
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -543,6 +805,50 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
 })
 
 // update - visitor - swagger
+// need to type - visitor_id, visitor_name, visitor_phonenumber, number_of_visitors, room_info, arrival_time, end_time
+
+/**
+ * @swagger
+ * paths:
+ *   /user/visitor/update:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Update visitor (put a visitor id and their info)
+ *       description: "Update a visitor account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 visitor_id:
+ *                   type: string
+ *                 visitor_name: 
+ *                   type: string
+ *                 visitor_phonenumber:
+ *                   type: string
+ *                 number_of_visitors:
+ *                   type: number
+ *                 room_info:
+ *                   type: string
+ *                 arrival_time:
+ *                   type: string
+ *                 end_time:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "visitor update success"
+ *         400:
+ *           description: "visitor update fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
 // update - visitor (use token)
 app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -553,7 +859,7 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 
 		try
 		{
-			if(user == "visitor update fail")
+			if(user == "visitor update fail" || user == "invalid username")
 			{
 				return res.status(400).send("visitor update fail")
 			}
@@ -564,7 +870,7 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -574,6 +880,39 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 })
 
 // delete - visitor - swagger
+// need to type - visitor_id
+
+/**
+ * @swagger
+ * paths:
+ *   /user/visitor/delete:
+ *     delete:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Delete visitor (put the visitor id)
+ *       description: "Delete a visitor account"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 visitor_id: 
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "visitor deletion success"
+ *         400:
+ *           description: "visitor deletion fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // delete - visitor (use token)
 app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -595,7 +934,7 @@ app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -605,6 +944,30 @@ app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 })
 
 // view - visitor - swagger
+// need to type - nothing
+
+/**
+ * @swagger
+ * paths:
+ *   /user/visitor/view:
+ *     get:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: View visitor 
+ *       description: "View their visitor only"
+ *       responses:
+ *         200:
+ *           description: "visitor view success"
+ *         400:
+ *           description: "no visitor found"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // view - visitor (use token)
 app.get('/user/visitor/view',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -626,7 +989,7 @@ app.get('/user/visitor/view',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -638,6 +1001,43 @@ app.get('/user/visitor/view',verifyToken,async(req,res) =>{
 //
 
 // create - facility - swagger
+// need to type - visitor_id, number_of_participants, facility
+
+/**
+ * @swagger
+ * paths:
+ *   /user/facility/create:
+ *     post:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Create facility
+ *       description: "Create a new facility booking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 visitor_id:
+ *                   type: string
+ *                 number_of_participants:
+ *                   type: number
+ *                 facility:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "facility creation success"
+ *         400:
+ *           description: "facility creation fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // create - facility (use token)
 app.post('/user/facility/create',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -659,7 +1059,7 @@ app.post('/user/facility/create',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -669,6 +1069,41 @@ app.post('/user/facility/create',verifyToken,async(req,res) =>{
 })
 
 // update - facility - detail - swagger
+// need to type - number_of_participants, facility
+
+/**
+ * @swagger
+ * paths:
+ *   /user/facility/update:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Update facility
+ *       description: "Update a facility booking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 number_of_participants:
+ *                   type: number
+ *                 facility:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "facility update success"
+ *         400:
+ *           description: "facility update fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // update - facility - detail (use token)
 app.patch('/user/facility/update',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -690,7 +1125,7 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -702,6 +1137,47 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
 //
 
 // create - parking - swagger
+// need to type - visitor_id, carplate_number, parking_lot, arrival_time, end_time
+
+/**
+ * @swagger
+ * paths:
+ *   /user/parking/create:
+ *     post:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Create parking
+ *       description: "Create a new parking booking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 visitor_id:
+ *                   type: string
+ *                 carplate_number:
+ *                   type: string
+ *                 parking_lot:
+ *                   type: string
+ *                 arrival_time:
+ *                   type: string
+ *                 end_time:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "parking creation success"
+ *         400:
+ *           description: "parking creation fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // create - parking (use token)
 app.post('/user/parking/create',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -723,7 +1199,7 @@ app.post('/user/parking/create',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -733,6 +1209,45 @@ app.post('/user/parking/create',verifyToken,async(req,res) =>{
 })
 
 // update - parking - detail - swagger
+// need to type - carplate_number, parking_lot, arrival_time, end_time
+
+/**
+ * @swagger
+ * paths:
+ *   /user/parking/update:
+ *     patch:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: Update parking
+ *       description: "Update a parking booking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 carplate_number:
+ *                   type: string
+ *                 parking_lot:
+ *                   type: string
+ *                 arrival_time:
+ *                   type: string
+ *                 end_time:
+ *                    type: string
+ *       responses:
+ *         200:
+ *           description: "parking update success"
+ *         400:
+ *           description: "parking update fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // update - parking - detail (use token)
 app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
@@ -754,7 +1269,7 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -766,8 +1281,34 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 ///////////////////////////// visitor /////////////////////////////
 
 // view - access - swagger
-// view - access
+// need to type - user_id
 
+/**
+ * @swagger
+ * paths:
+ *   /visitor/view:
+ *     get:
+ *       tags:
+ *         - general
+ *       summary: View a visitor's access
+ *       description: "View visitor access"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 user_id:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "View visitor access success"
+ *         403:
+ *           description: "Forbidden"
+ */
+
+// view - access
 app.get('/visitor/view', async(req,res) =>{
 	let visitor = await Visitor.visitorviewaccess(req.body)
 
@@ -777,7 +1318,7 @@ app.get('/visitor/view', async(req,res) =>{
 	}
 	catch(err)
 	{
-		return res.status(404).send(err)
+		return res.status(403).send(err)
 	}
 })
 
@@ -786,6 +1327,33 @@ app.get('/visitor/view', async(req,res) =>{
 
 // everyone can use
 // view - facility - swagger
+// need to type - _id (any)
+
+/**
+ * @swagger
+ * paths:
+ *   /facility/view:
+ *     get:
+ *       tags:
+ *         - general
+ *       summary: View a facility's access
+ *       description: "View facility access"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "View facility access success"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // view - facility 
 app.get('/facility/view', async(req,res) =>{
 	let view = await Facility.viewfacility(req.body) // _id : target
@@ -796,12 +1364,46 @@ app.get('/facility/view', async(req,res) =>{
 	}
 	catch(err)
 	{
-		return res.status(404).send(err)
+		return res.status(403).send(err)
 	}
 })
 
 // user and admin can use
 // delete - facility - swagger 
+
+// need to type - user_id
+
+/**
+ * @swagger
+ * paths:
+ *   /facility/delete:
+ *     delete:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin/user
+ *       summary: Delete a facility booking
+ *       description: "Delete facility booking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 user_id:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "facility delete success"
+ *         400:
+ *           description: "facility delete fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // delete - facility (use token)  
 app.delete('/facility/delete',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user'||req.token.role=='admin')
@@ -823,7 +1425,7 @@ app.delete('/facility/delete',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -836,6 +1438,33 @@ app.delete('/facility/delete',verifyToken,async(req,res) =>{
 
 // everyone can use
 // view - parking - swagger
+// need to type - _id (any)
+
+/**
+ * @swagger
+ * paths:
+ *   /parking/view:
+ *     get:
+ *       tags:
+ *         - general
+ *       summary: View a parking's access
+ *       description: "View parking access"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "View parking access success"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // view - parking 
 app.get('/parking/view',async(req,res) =>{
 	let view = await Parking.viewparking(req.body) // _id : target
@@ -846,12 +1475,46 @@ app.get('/parking/view',async(req,res) =>{
 	}
 	catch(err)
 	{
-		return res.status(404).send(err)
+		return res.status(403).send(err)
 	}
 })
 
 // user and admin can use
 // delete - parking - swagger 
+
+// need to type - user_id
+
+/**
+ * @swagger
+ * paths:
+ *   /parking/delete:
+ *     delete:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - admin/user
+ *       summary: Delete a parking booking
+ *       description: "Delete parking booking"
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema: 
+ *               type: object
+ *               properties:
+ *                 user_id:
+ *                   type: string
+ *       responses:
+ *         200:
+ *           description: "parking delete success"
+ *         400:
+ *           description: "parking delete fail"
+ *         401:
+ *           description: "Unauthorized"
+ *         403:
+ *           description: "Forbidden"
+ */
+
 // delete - parking (use token)  
 app.delete('/parking/delete',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user'||req.token.role == 'admin')
@@ -873,7 +1536,7 @@ app.delete('/parking/delete',verifyToken,async(req,res) =>{
 		}
 		catch (err)
 		{
-			return res.status(404).send(err)
+			return res.status(403).send(err)
 		}
 	}
 	else
@@ -913,6 +1576,6 @@ function verifyToken(req, res, next) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-// 200 = OK, 201 = created														 //
+// 200 = OK														 				 //
 // 400 = bad request, 401 = authorization fail, 403 = forbidden, 404 = Not found //
 ///////////////////////////////////////////////////////////////////////////////////

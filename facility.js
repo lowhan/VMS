@@ -35,9 +35,9 @@ class Facility {
 		return facilities.findOne({								 
 			$or : 
 			[
-				{ 'user_id': token.user_id },	
-				{ 'visitor_id': token.user_id },
-				{ 'security_id': token.user_id }
+				{ 'user_id': token._id },	
+				{ 'visitor_id': token._id },
+				{ 'security_id': token._id }
 			]			
 		}).then(async facility =>{
 			if (facility) 
@@ -79,7 +79,11 @@ class Facility {
 			$and : 	
 			[
 				{ 'user_id': detail.user_id },
+<<<<<<< Updated upstream
 				{ 'security_id': token.security_id }
+=======
+				{ 'security_id': token._id }
+>>>>>>> Stashed changes
 			]							
 		}).then(async facility =>{
 			if (facility) 
