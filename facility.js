@@ -79,11 +79,7 @@ class Facility {
 			$and : 	
 			[
 				{ 'user_id': detail.user_id },
-<<<<<<< Updated upstream
-				{ 'security_id': token.security_id }
-=======
 				{ 'security_id': token._id }
->>>>>>> Stashed changes
 			]							
 		}).then(async facility =>{
 			if (facility) 

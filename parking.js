@@ -83,12 +83,8 @@ class Parking {
 		return parkings.findOne({									// detail = which visitor's permission is allowed
 			$and : 	
 			[
-<<<<<<< Updated upstream
 				{ 'user_id': detail.user_id },
-=======
-				{ 'visitor_id': detail.user_id },
->>>>>>> Stashed changes
-				{ 'security_id': token.security_id }
+				{ 'security_id': token._id }
 			]							
 		}).then(async parking =>{
 			if (parking) 
