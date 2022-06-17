@@ -373,11 +373,7 @@ app.post('/user/login', async (req,res) =>{
 	{
 		res.status(200).json({
 			token : generateAccessToken({
-<<<<<<< HEAD
 					'_id': user._id,
-=======
-					'_id' : user._id,
->>>>>>> 1603ed95b68476f56dfd420e26633a9e48904934
 					'security_id' : user.security_id,
 					'login_username' : user.login_username,
 					'login_password' : user.login_password,       
