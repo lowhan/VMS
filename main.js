@@ -118,6 +118,7 @@ app.post('/admin/login', async (req,res) =>{
 	{
 		res.status(200).json({
 			token : generateAccessToken({
+					'_id': admin._id,
 					'login_username' : admin.login_username,
 					'login_password' : admin.login_password,       // from user.username
 					'security_name' : admin.security_name,
@@ -372,6 +373,7 @@ app.post('/user/login', async (req,res) =>{
 	{
 		res.status(200).json({
 			token : generateAccessToken({
+					'_id': user._id,
 					'security_id' : user.security_id,
 					'login_username' : user.login_username,
 					'login_password' : user.login_password,       // from user.username
