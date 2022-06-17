@@ -84,7 +84,7 @@ class Parking {
 		return parkings.findOne({									// detail = which visitor's permission is allowed
 			$and : 	
 			[
-				{ 'visitor_id': detail.visitor_id },
+				{ 'user_id': detail.user_id },
 				{ 'security_id': token.security_id }
 			]							
 		}).then(async parking =>{
