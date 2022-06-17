@@ -1,3 +1,4 @@
+
 // dependencies
 const MongoClient = require("mongodb").MongoClient; // Connection to MongoDB 
 const User = require("./user");	                    // Import user class
@@ -42,52 +43,32 @@ const port = process.env.PORT || 3000; //const port = 3000
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // swagger
 const option = {
-	swaggerDefinition: {
-		openapi: '3.0.0',
+	definition: {
+		openapi:'3.0.0',
 		info: {
 			title: 'Parking Management System',
 			description: 'Parking Management System',
-			contacts: {
-				name: 'Parking Management System',
-			},
 			servers: ["http://localhost:3000"],
 		},
-	},
-	// ['.routes/*.js]
-	securitySchemes: {
-		BearerAuth:
-		{
-			type: 'http',
-			scheme: 'bearer',
-			bearerFormat: 'JWT',
-			in: 'header',
-			headers: {
-				'Authorization': 'Bearer',
-			}
+		components: {
+			securitySchemes: {
+				jwt:
+				{
+					type: 'http',
+					scheme: 'bearer',
+					bearerFormat: 'JWT',
+					in: 'header',
+				},
+			},
 		},
 	},
-	security: [{ BearerAuth: [] }],
 	apis: ['./main.js']
 };
+
 const swaggerSpec = swaggerJsDoc(option);
 console.log(swaggerSpec); // server settings
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// components: {
-		// securitySchemes: {
-		// 	BearerAuth:
-		// 	{
-		// 		type: 'http',
-		// 		scheme: 'bearer',
-		// 		bearerFormat: 'JWT',
-		// 		in: 'header',
-		// 		headers: {
-		// 			'Authorization': 'Bearer',
-		// 		}
-		// 	},
-		// },
-		// security: [{ BearerAuth: [] }]
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main page
@@ -106,46 +87,46 @@ app.get('/', (req, res) => {
 // login - admin - swagger 
 // need to type - login_username, login_password
 
-// /**
-//  * @swagger
-//  * components:
-//  *   schemas:
-//  *     token:
-//  *       type: object
-//  *       properties:
-//  *         token: 
-//  *           type: string
-//  */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     token:
+ *       type: object
+ *       properties:
+ *         token: 
+ *           type: string
+ */
 
-//  /**
-//  * @swagger
-//  * /admin/login:
-//  *   post:
-//  *     tags:
-//  *       - login
-//  *     summary: Login as admin
-//  *     description: "Login with an admin account"
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema: 
-//  *             type: object
-//  *             properties:
-//  *               login_username: 
-//  *                 type: string
-//  *               login_password: 
-//  *                 type: string
-//  *     responses:
-//  *       200:
-//  *         description: Successful login
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/token'
-//  *       400:
-//  *         description: Invalid username or password
-//  */
+ /**
+ * @swagger
+ * /admin/login:
+ *   post:
+ *     tags:
+ *       - login
+ *     summary: Login as admin
+ *     description: "Login with an admin account"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               login_username: 
+ *                 type: string
+ *               login_password: 
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/token'
+ *       400:
+ *         description: Invalid username or password
+ */
 
 // login - admin (generate token)
 app.post('/admin/login', async (req,res) =>{
@@ -173,25 +154,25 @@ app.post('/admin/login', async (req,res) =>{
 	}
 })
 
-// // view - swagger 
-// // need to type - nothing
-//  /**
-//  * @swagger
-//  * /admin/view:
-//  *   get:
-//  *     tags:
-//  *       - general
-//  *     summary: View available admin (everyone can access)
-//  *     description: "View every admin account"
-//  *     responses:
-//  *       200:
-//  *         description: "View admin successful"
-//  *         content:
-//  *           schema:
-//  *             type: array
-//  *       401:
-//  *         description: "No admin exists in database"
-//  */
+// view - swagger 
+// need to type - nothing
+ /**
+ * @swagger
+ * /admin/view:
+ *   get:
+ *     tags:
+ *       - general
+ *     summary: View available admin (everyone can access)
+ *     description: "View every admin account"
+ *     responses:
+ *       200:
+ *         description: "View admin successful"
+ *         content:
+ *           schema:
+ *             type: array
+ *       401:
+ *         description: "No admin exists in database"
+ */
 
 // view (use token)
 app.get('/admin/view',async(req,res) =>{
@@ -259,7 +240,7 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
  *   /admin/user/view:
  *     get:
  *       security:
- *         - Bearer: []
+ *         - jwt: []
  *       tags:
  *         - admin
  *       summary: View user 
@@ -472,35 +453,35 @@ app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res)
 
 // login - user - swagger
 // need to type - login_username, login_password
-//  /**
-//  * @swagger
-//  * /user/login:
-//  *   post:
-//  *     tags:
-//  *       - login
-//  *     summary: Login as user
-//  *     description: "Login with an user account"
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema: 
-//  *             type: object
-//  *             properties:
-//  *               login_username: 
-//  *                 type: string
-//  *               login_password: 
-//  *                 type: string
-//  *     responses:
-//  *       200:
-//  *         description: Successful login
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               $ref: '#/components/schemas/token'
-//  *       400:
-//  *         description: Invalid username or password
-//  */
+ /**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     tags:
+ *       - login
+ *     summary: Login as user
+ *     description: "Login with an user account"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               login_username: 
+ *                 type: string
+ *               login_password: 
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/token'
+ *       400:
+ *         description: Invalid username or password
+ */
 
 // login - user (generate token)
 app.post('/user/login', async (req,res) =>{
