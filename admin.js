@@ -175,6 +175,7 @@ class Admin {
 
 	// update user - U
 	static async updateuser(sample, updatedoc) {	// Only update when username and password are matched
+		console.log(sample.login_username)
 		return users.findOne({								
 			'login_username': sample.login_username				
 		}).then(async user =>{

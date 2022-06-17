@@ -38,7 +38,7 @@ class User {
 	////////////////////////////////////////////////////////////
 
 	// create visitor - C
-	static async createvistor(user,visitor) {	// Only delete when username and password are matched 
+	static async createvisitor(user,visitor) {	// Only delete when username and password are matched 
 		return visitors.findOne({
 			'user_id' : user._id
 		}).then(async res =>{
@@ -135,7 +135,14 @@ class User {
 				'user_id' : user._id
 			}
 		).then(async visitor =>{
-			return visitor;
+			if(visitor)
+			{
+				return visitor;
+			}
+			else
+			{
+				return "no visitor found"
+			}		
 		})
 	}
 }
