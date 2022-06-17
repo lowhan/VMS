@@ -21,6 +21,7 @@ MongoClient.connect(
 	Admin.injectDB(client);
 	Visitor.injectDB(client);
 })
+
 // web application framework for node.js HTTP applications
 const express = require('express')
 const app = express() 
@@ -45,13 +46,14 @@ const options = {
 };
 const swaggerSpec = swaggerJsdoc(options);
 console.log(swaggerSpec); // server settings
+
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Main page
 
 app.get('/', (req, res) => {
-	res.send('Welcome to OUR page !') // maybe u can add details at here
+	res.send('Welcome to OUR page ! use /api to use swagger !') // maybe u can add details at here
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +64,46 @@ app.get('/', (req, res) => {
 
 ///////////////////////////// admin /////////////////////////////
 // login - admin - swagger 
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         token: 
+ *           type: string
+ */
+
+ /**
+ * @swagger
+ * /user/login:
+ * /admin/login:
+ *   post:
+ *     description: Login
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               login_username: 
+ *                 type: string
+ *               login_password: 
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Invalid username or password
+ */
+
 // login - admin (generate token)
 app.post('/admin/login', async (req,res) =>{
 	const admin = await Admin.loginadmin(req.body);
@@ -69,24 +111,27 @@ app.post('/admin/login', async (req,res) =>{
 	if (admin == "invalid username"|| admin =='invalid password')
 	{
 		console.log('Login status', admin)
-		return res.status(401).send("login fail")
+		return res.status(401).send("admin login fail")
 	}
 	else
 	{
 		res.status(200).json({
-			token:generateAccessToken({
+			token : generateAccessToken({
 					'login_username' : admin.login_username,
 					'login_password' : admin.login_password,       // from user.username
 					'security_name' : admin.security_name,
 					'security_phonenumber' : admin.security_phonenumber,	
 					'role' : 'admin'
-			})
+			}),
+			status : 'admin login success'
 		})
 	}
 })
+
 // view - swagger 
+
 // view (use token)
-app.get('/admin/login',async(req,res) =>{
+app.get('/admin/view',async(req,res) =>{
 	let view = await Admin.viewadmin()
 	res.send(view);
 })
