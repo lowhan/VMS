@@ -87,9 +87,8 @@ class Admin {
 		return admins.aggregate([{
 			$project:
 			{
-				'_id':0,
 				'security_name':1,
-				'security_phonenumber':1
+				'security_phonenumber':1,
 			}
 		}]).toArray().then(async admin =>{
 			return admin;

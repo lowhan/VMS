@@ -69,7 +69,7 @@ app.get('/', (req, res) => {
  * @swagger
  * components:
  *   schemas:
- *     User:
+ *     token:
  *       type: object
  *       properties:
  *         token: 
@@ -79,9 +79,8 @@ app.get('/', (req, res) => {
  /**
  * @swagger
  * /user/login:
- * /admin/login:
  *   post:
- *     description: Login
+ *     description: "Login with a particular role"
  *     requestBody:
  *       required: true
  *       content:
@@ -99,13 +98,13 @@ app.get('/', (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/token'
  *       401:
  *         description: Invalid username or password
  */
 
 // login - admin (generate token)
-app.post('/admin/login', async (req,res) =>{
+app.post('/:admin/login', async (req,res) =>{
 	const admin = await Admin.loginadmin(req.body);
 	console.log('\nLogin admin:', req.body); //check in console
 	if (admin == "invalid username"|| admin =='invalid password')
@@ -129,6 +128,44 @@ app.post('/admin/login', async (req,res) =>{
 })
 
 // view - swagger 
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     token:
+ *       type: object
+ *       properties:
+ *         token: 
+ *           type: string
+ */
+
+ /**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     description: "Login with a particular role"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               login_username: 
+ *                 type: string
+ *               login_password: 
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/token'
+ *       401:
+ *         description: Invalid username or password
+ */
 
 // view (use token)
 app.get('/admin/view',async(req,res) =>{
@@ -156,7 +193,7 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
 
 // view - user - swagger 
 // view - user (use token)
-app.get('/admin/user/login',async(req,res) =>{
+app.get('/admin/user/view',async(req,res) =>{
 	let view = await Admin.viewuser()
 	res.send(view);
 })
@@ -165,17 +202,25 @@ app.get('/admin/user/login',async(req,res) =>{
 // delete - user - swagger 
 // delete - user (use token)
 app.delete('admin/user/delete', verifyToken, async (req, res) => {
-	let admin = await Admin.deleteuser(req.user)
-	console.log("\nDelete user:", req.user)
-	console.log("Deletion status:", admin)
+	if(req.token.role == 'admin')
+	{
+		let admin = await Admin.deleteuser(req.body)
 
-	if(admin == "invalid username")
-	{
-		return res.status(400).send("deletion fail")
+		console.log("\nDelete user:", req.body)
+		console.log("Deletion status:", admin)
+
+		if(admin == "invalid username")
+		{
+			return res.status(400).send("deletion fail")
+		}
+		if(admin =="user deletion success")
+		{
+			return res.status(200).send("user deletion success")
+		}
 	}
-	if(admin =="user deletion success")
+	else
 	{
-		return res.status(200).send("user deletion success")
+		return res.status(401).send("Unauthorized")
 	}
 })		
 
