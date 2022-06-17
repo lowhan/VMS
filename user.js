@@ -134,7 +134,7 @@ class User {
 			{
 				'user_id' : user._id
 			}
-		).then(async visitor =>{
+		).toArray().then(async visitor =>{
 			if(visitor)
 			{
 				return visitor;

@@ -40,10 +40,25 @@ const options = {
 	definition: {
 		openapi:'3.0.0',
 		info: {
-			title:'MyVMS API',
+			title:'Visitor Management System API',
 			version: '1.0.0',
 		},
 	},
+	components: {
+		securitySchemes: {
+			BearerAuth:
+			{
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+				in: 'header',
+				headers: {
+					'Authorization': 'Bearer',
+				}
+			},
+		},
+	},
+	security: [{ BearerAuth: [] }],
 	apis: ['./main.js'], // files containing annotations as above
 };
 const swaggerSpec = swaggerJsdoc(options);
@@ -67,6 +82,7 @@ app.get('/', (req, res) => {
 ///////////////////////////// admin /////////////////////////////
 // login - admin - swagger 
 // need to type - login_username, login_password
+
 /**
  * @swagger
  * components:
@@ -82,6 +98,9 @@ app.get('/', (req, res) => {
  * @swagger
  * /admin/login:
  *   post:
+ *     tags:
+ *       - login
+ *     summary: Login as admin
  *     description: "Login with an admin account"
  *     requestBody:
  *       required: true
@@ -101,7 +120,7 @@ app.get('/', (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/token'
- *       401:
+ *       400:
  *         description: Invalid username or password
  */
 
@@ -109,9 +128,9 @@ app.get('/', (req, res) => {
 app.post('/admin/login', async (req,res) =>{
 	const admin = await Admin.loginadmin(req.body);
 	console.log('\nLogin admin:', req.body); //check in console
+	console.log('Login status', admin)
 	if (admin == "invalid username"|| admin =='invalid password')
 	{
-		console.log('Login status', admin)
 		return res.status(400).send("admin login fail")
 	}
 	else
@@ -136,6 +155,9 @@ app.post('/admin/login', async (req,res) =>{
  * @swagger
  * /admin/view:
  *   get:
+ *     tags:
+ *       - general
+ *     summary: View available admin (everyone can access)
  *     description: "View every admin account"
  *     responses:
  *       200:
@@ -152,8 +174,6 @@ app.get('/admin/view',async(req,res) =>{
 	let view = await Admin.viewadmin()
 	res.send(view);
 })
-
-
 
 // create - user - swagger 
 // need to type - login_username, login_password, user_name, user_phonenumber
@@ -190,6 +210,45 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
 
 // view - user - swagger 
 // need to type - nothing
+/**
+ * @swagger
+ * components:
+ *   schemas: 
+ *     user:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         login_username:
+ *           type: string
+ *         user_name:
+ *           type: string
+ *         user_phonenumber:
+ *           type: string
+ *         security_id:
+ *           type: string
+ */
+
+ /**
+ * @swagger
+ * paths:
+ *   /admin/user/view:
+ *     get:
+ *       security:
+ *         - BearerAuth: []
+ *       tags:
+ *         - admin
+ *       summary: View user 
+ *       description: "View every user under a security"
+ *       responses:
+ *         200:
+ *           description: "View user successful"
+ *           content:
+ *             schema:
+ *               $ref : '#/components/schemas/user'
+ *         401:
+ *           description: "Unauthorized"
+ */
 
 // view - user (use token)
 app.get('/admin/user/view',verifyToken,async(req,res) =>{
@@ -388,7 +447,36 @@ app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res)
 ///////////////////////////// user /////////////////////////////
 
 // login - user - swagger
-// need to type - 
+// need to type - login_username, login_password
+ /**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     tags:
+ *       - login
+ *     summary: Login as user
+ *     description: "Login with an user account"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: 
+ *             type: object
+ *             properties:
+ *               login_username: 
+ *                 type: string
+ *               login_password: 
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/token'
+ *       400:
+ *         description: Invalid username or password
+ */
 
 // login - user (generate token)
 app.post('/user/login', async (req,res) =>{
@@ -516,7 +604,7 @@ app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 app.get('/user/visitor/view',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
 	{
-		let user = await User.viewvisitor(req.body);
+		let user = await User.viewvisitor(req.token);
 		console.log('\nUser Id of the visitor:',req.body);
 		console.log('Result:',user);
 
@@ -680,7 +768,7 @@ app.get('/visitor/view', async(req,res) =>{
 
 	try
 	{
-		res.status(200).send(visitor);
+		return res.status(200).send(visitor);
 	}
 	catch(err)
 	{
@@ -699,7 +787,7 @@ app.get('/facility/view',verifyToken,async(req,res) =>{
 
 	try
 	{
-		res.status(200).send(view);
+		return res.status(200).send(view);
 	}
 	catch(err)
 	{
@@ -749,7 +837,7 @@ app.get('/parking/view',verifyToken,async(req,res) =>{
 
 	try
 	{
-		res.status(200).send(view);
+		return res.status(200).send(view);
 	}
 	catch(err)
 	{
