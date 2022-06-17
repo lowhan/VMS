@@ -66,7 +66,7 @@ app.get('/', (req, res) => {
 
 ///////////////////////////// admin /////////////////////////////
 // login - admin - swagger 
-
+// need to type - login_username, login_password
 /**
  * @swagger
  * components:
@@ -131,7 +131,7 @@ app.post('/admin/login', async (req,res) =>{
 })
 
 // view - swagger 
-
+// need to type - nothing
  /**
  * @swagger
  * /admin/view:
@@ -156,6 +156,8 @@ app.get('/admin/view',async(req,res) =>{
 
 
 // create - user - swagger 
+// need to type - login_username, login_password, user_name, user_phonenumber
+
 // create - user (use token)
 app.post('/admin/user/create',verifyToken,async(req,res) =>{
 	if(req.token.role == 'admin')
@@ -187,13 +189,24 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
 })
 
 // view - user - swagger 
+// need to type - nothing
+
 // view - user (use token)
-app.get('/admin/user/view',async(req,res) =>{
-	let view = await Admin.viewuser()
-	res.send(view);
+app.get('/admin/user/view',verifyToken,async(req,res) =>{
+	if(req.token.role == 'admin')
+	{
+		let view = await Admin.viewuser()
+		res.status(200).send(view);
+	}
+	else
+	{
+		res.status(401).send("Unauthorized");
+	}
 })
 
 // delete - user - swagger 
+// need to type - login_username 
+
 // delete - user (use token)
 app.delete('/admin/user/delete', verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
@@ -225,12 +238,13 @@ app.delete('/admin/user/delete', verifyToken, async (req, res) => {
 })		
 
 // update - user - swagger
-// update - user (use token)
+// need to type - login_username (target), user_name , user_phonenumber
 
+// update - user (use token)
 app.patch('/admin/user/update',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Admin.updateuser(req.token,req.body)
+		let admin = await Admin.updateuser(req.body)
 		console.log("\nUpdate user:", req.body)
 		console.log("Updation status:", admin)
 
@@ -256,16 +270,25 @@ app.patch('/admin/user/update',verifyToken, async (req, res) => {
 	}
 })		
 
-
-
 // view - visitor - swagger 
+// need to type - nothing 
+
 // view - visitor (use token)
-app.get('/admin/visitor/view',async(req,res) =>{
-	let view = await Admin.viewuservisitor()
-	res.send(view);
+app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
+	if(req.token.role == 'admin')
+	{
+		let view = await Admin.viewuservisitor()
+		res.status(200).send(view);
+	}
+	else
+	{
+		res.status(401).send("Unauthorized");
+	}
 })
 
 // update - visitor - permission - swagger 
+// need to type
+
 // update - visitor - permission (use token)
 app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
@@ -297,6 +320,8 @@ app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
 })		
 
 // update - facility - permission - swagger
+// need to type
+
 // update - facility - permission (use token)
 app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
@@ -328,6 +353,8 @@ app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, re
 })	
 
 // update - parking - permission - swagger
+// need to type
+
 // update - parking - permission (use token)
 app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
@@ -360,7 +387,9 @@ app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res)
 
 ///////////////////////////// user /////////////////////////////
 
-// login - user - swagger 
+// login - user - swagger
+// need to type - 
+
 // login - user (generate token)
 app.post('/user/login', async (req,res) =>{
 	const user = await User.loginuser(req.body);
@@ -388,6 +417,8 @@ app.post('/user/login', async (req,res) =>{
 })
 
 // create - visitor - swagger
+// need to type - 
+
 // create - visitor (use token)
 app.post('/user/visitor/create',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')

@@ -174,10 +174,9 @@ class Admin {
 	}
 
 	// update user - U
-	static async updateuser(sample, updatedoc) {	// Only update when username and password are matched
-		console.log(sample.login_username)
+	static async updateuser(target) {	// Only update when username and password are matched
 		return users.findOne({								
-			'login_username': sample.login_username				
+			'login_username': target.login_username				
 		}).then(async user =>{
 			if (user) // Validate username
 			{ 			
@@ -189,8 +188,8 @@ class Admin {
 					{ // Value to change
 						'$set' : 
 						{ 
-							'user_name' : updatedoc.user_name,
-							'user_phonenumber' : updatedoc.user_phonenumber 
+							'user_name' : target.user_name,
+							'user_phonenumber' : target.user_phonenumber 
 						} 
 					}		   
 				);
@@ -208,11 +207,11 @@ class Admin {
 	
     static async viewuservisitor() {
 		return visitors.find({}).toArray().then(async visitor =>{ 
-			if (visitor)
+			try
 			{
 				return visitor;
 			}
-			else
+			catch
 			{
 				return "visitor view fail";
 			}

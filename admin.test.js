@@ -3,11 +3,11 @@ const Admin = require("./admin");
 
 //sample data  
 const newsample_admin = {	
-	_id: "62aafc8472263b2a3ed6e658",	   
-    login_username : "usertest2",				// make sure this data is not exist in your mongodb 
-	login_password : "password1",
-    security_name:"secure_tan",
-	security_phonenumber : "011-1111111",
+	//_id: "62aafc8472263b2a3ed6e658",	   
+    login_username : "admin",				// make sure this data is not exist in your mongodb 
+	login_password : "passwordfromadmin",
+    security_name: "Jackson",
+	security_phonenumber : "0124569562",
 }
 
 const newsample_user = {						// new sample for register success, login success, delete success
@@ -71,10 +71,10 @@ describe("Admin Account Management", () => {
 	// })
 
 	// read
-	test("Admin view - success", async () => {
-		const res = await Admin.viewuser();
-		expect(res).toContainEqual(expect.any(Object));
-	})
+	// test("Admin view - success", async () => {
+	// 	const res = await Admin.viewuser();
+	// 	expect(res).toContainEqual(expect.any(Object));
+	// })
 
 	// ///////////////////////////////////////////////////////////////
 	// // user 
