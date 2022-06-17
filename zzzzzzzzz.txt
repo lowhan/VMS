@@ -1,21 +1,27 @@
-	definition: 
-	{
-		openapi:'3.0.3',
+const option = {
+	definition: {
+		openapi:'3.0.0',
 		info: {
-			title:'Visitor Management System API',
-			version: '1.0.0',
+			title: 'Parking Management System',
+			description: 'Parking Management System',
+			servers: ["http://localhost:3000"],
+		},
+		components: {
+			securitySchemes: {
+				BearerAuth:
+				{
+					type: 'http',
+					scheme: 'bearer',
+					bearerFormat: 'JWT',
+					in: 'header',
+				},
+			},
 		},
 	},
-		securitySchemes: {
-			Bearer:
-			{
-				scheme: 'bearer',
-				type: 'SecuritySchemeType.HTTP',
-				name: 'bearerAuth',
-				in: 'header',
-				header: {
-					'Authorization': 'Bearer <token>'
-				}
-			},
-		security: [{ Bearer: [] }]
-	},
+	apis: ['./main.js']
+};
+
+const swaggerSpec = swaggerJsDoc(option);
+console.log(swaggerSpec); // server settings
+
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
