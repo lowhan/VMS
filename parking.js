@@ -38,9 +38,9 @@ class Parking {
 		return parkings.findOne({								 
 			$or : 
 			[
-				{ 'user_id': token._id },	
-				{ 'visitor_id': token._id },
-				{ 'security_id': token._id }
+				{ 'user_id': token.user_id },	
+				{ 'visitor_id': token.user_id },
+				{ 'security_id': token.user_id }
 			]			
 		}).then(async parking =>{
 			if (parking) 
@@ -106,7 +106,7 @@ class Parking {
 
 	// delete parking
 	static async deleteparking(detail) {		
-		return parkings.findOne({ 'user_id' : detail._id }).then(async parking =>{
+		return parkings.findOne({ 'user_id' : detail.user_id }).then(async parking =>{
 			if (parking) 
 			{
 				await parkings.deleteOne({ 

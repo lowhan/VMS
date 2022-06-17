@@ -35,9 +35,9 @@ class Facility {
 		return facilities.findOne({								 
 			$or : 
 			[
-				{ 'user_id': token._id },	
-				{ 'visitor_id': token._id },
-				{ 'security_id': token._id }
+				{ 'user_id': token.user_id },	
+				{ 'visitor_id': token.user_id },
+				{ 'security_id': token.user_id }
 			]			
 		}).then(async facility =>{
 			if (facility) 
@@ -100,7 +100,7 @@ class Facility {
 
     // delete facility
 	static async deletefacility(detail) {		
-		return facilities.findOne({ 'user_id' : detail._id }).then(async facility =>{
+		return facilities.findOne({ 'user_id' : detail.user_id }).then(async facility =>{
 			if (facility) 
 			{
 				await facilities.deleteOne({ 
