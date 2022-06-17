@@ -18,7 +18,7 @@ class User {
 		}).then(async user =>{
 			if (user) // Validate username
 			{ 
-				const PasswordValid = await bcrypt.compare(sample.password, user.password)	// Validate password	 
+				const PasswordValid = await bcrypt.compare(sample.login_password, user.login_password)	// Validate password	 
 				if (PasswordValid == false) 
 				{
 					return "invalid password";
