@@ -155,7 +155,6 @@ app.post('/admin/login', async (req,res) =>{
 					'security_phonenumber' : admin.security_phonenumber,	
 					'role' : 'admin'
 			}),
-			decoded,
 			status : 'admin login success'
 		})
 	}
@@ -216,7 +215,8 @@ app.get('/admin/view',async(req,res) =>{
  *                 user_name:
  *                   type: string
  *                 user_phonenumber:
- *                   type: string
+ *                   type: string  
+ *                   example: "012-3456789"           
  *       responses:
  *         200:
  *           description: "user creation success"
@@ -407,6 +407,7 @@ app.delete('/admin/user/delete', verifyToken, async (req, res) => {
  *                   type: string
  *                 user_phonenumber:
  *                   type: string
+ *                   example: "012-3456789" 
  *       responses:
  *         200:
  *           description: "user update success"
@@ -705,7 +706,12 @@ app.patch('/admin/parking/updateparkingpermission/:user_id',verifyToken, async (
 // login - user (generate token)
 app.post('/user/login', async (req,res) =>{
 	const user = await User.loginuser(req.body);
+<<<<<<< Updated upstream
 	console.log('\nLogin user:', req.body); //check in console
+=======
+	console.log('\nLogin admin:', req.body); //check in console
+	console.log('Login status:', user)
+>>>>>>> Stashed changes
 	if (user == "invalid username"|| user =='invalid password')
 	{   
 		console.log("user login fail")
@@ -726,7 +732,6 @@ app.post('/user/login', async (req,res) =>{
 			status : 'user login success'
 		})
 	}
-	console.log('Login status', user)
 })
 
 // create - visitor - swagger
@@ -754,14 +759,18 @@ app.post('/user/login', async (req,res) =>{
  *                   type: string
  *                 visitor_phonenumber:
  *                   type: string
+ *                   example: "012-3456789" 
  *                 number_of_visitors:
  *                   type: number
  *                 room_info:
  *                   type: string
+ *                   example: "Blok A-000"
  *                 arrival_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *                 end_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *       responses:
  *         200:
  *           description: "visitor creation success"
@@ -830,14 +839,18 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
  *                   type: string
  *                 visitor_phonenumber:
  *                   type: string
+ *                   example: "012-3456789" 
  *                 number_of_visitors:
  *                   type: number
  *                 room_info:
  *                   type: string
+ *                   example: "Blok A-000"
  *                 arrival_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *                 end_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *       responses:
  *         200:
  *           description: "visitor update success"
@@ -1160,12 +1173,16 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
  *                   type: string
  *                 carplate_number:
  *                   type: string
+ *                   example: "MAS-0000"
  *                 parking_lot:
  *                   type: string
+ *                   example: "A-00"
  *                 arrival_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *                 end_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *       responses:
  *         200:
  *           description: "parking creation success"
@@ -1230,12 +1247,16 @@ app.post('/user/parking/create',verifyToken,async(req,res) =>{
  *               properties:
  *                 carplate_number:
  *                   type: string
+ *                   example: "MAS-0000"
  *                 parking_lot:
  *                   type: string
+ *                   example: "A-00"
  *                 arrival_time:
  *                   type: string
+ *                   example: "YYYY/MM/DD-12:00"
  *                 end_time:
  *                    type: string
+ *                    example: "YYYY/MM/DD-12:00"
  *       responses:
  *         200:
  *           description: "parking update success"
@@ -1576,8 +1597,3 @@ function verifyToken(req, res, next) {
 		next();
 	});
 }
-
-///////////////////////////////////////////////////////////////////////////////////
-// 200 = OK														 				 //
-// 400 = bad request, 401 = authorization fail, 403 = forbidden, 404 = Not found //
-///////////////////////////////////////////////////////////////////////////////////
