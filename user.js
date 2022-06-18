@@ -72,58 +72,44 @@ class User {
 	}).then(async visitor =>{
 		if (visitor) 
 		{ 			 
-			if (visitor._id != target.visitor_id) // visitor_id = the id selected by user
-			{ 
-				return "visitor update fail";
+			await visitors.updateOne(	
+			{ // Target to change
+				'_id' : visitor._id
 			}
-			else
-			{
-				await visitors.updateOne(	
-					{ // Target to change
-						'_id' : visitor._id
-					}
-					, 
-					{ // Value to change
-						'$set' : 
-						{ 
-							'visitor_name' : target.visitor_name,
-							'visitor_phonenumber' : target.visitor_phonenumber,
-							'number_of_visitors' : target.number_of_visitors,
-							'room_info' : target.room_info,
-							'arrival_time' : target.arrival_time,
-							'end_time' : target.end_time	   
-						 } 
-					});
-					return "visitor update success";
-				}
-			}
-		else // if user doesn't exists
+			, 
+			{ // Value to change
+				'$set' : 
+				{ 
+					'visitor_name' : target.visitor_name,
+					'visitor_phonenumber' : target.visitor_phonenumber,
+					'number_of_visitors' : target.number_of_visitors,
+					'room_info' : target.room_info,
+					'arrival_time' : target.arrival_time,
+					'end_time' : target.end_time	   
+				 } 
+			});
+			return "visitor update success";
+		}
+		else // if user has a visitor
 		{
-			return "invalid username";
+			return "visitor update fail";
 		} 
 	})
 	}
 	
 	// delete visitor - D
-	static async deletevisitor(token, targetid) {	// (visitor and users) Only delete when username and password are matched
+	static async deletevisitor(token) {	// (visitor and users) Only delete when username and password are matched
 		return visitors.findOne({								
 			'user_id': token._id		
 		}).then(async visitor =>{
 			if (visitor) 
 			{ 			
-				if (visitor._id != targetid.visitor_id) 
-				{ 
-					return "visitor deletion fail";
-				}
-				else
-				{
-					await visitors.deleteOne({'_id':visitor._id});
-					return "visitor deletion success";
-				}
+				await visitors.deleteOne({'_id':visitor._id});
+				return "visitor deletion success";
 			}
 			else // if user doesn't exists
 			{
-				return "invalid username";
+				return "visitor deletion fail";
 			} 
 		})
 	}

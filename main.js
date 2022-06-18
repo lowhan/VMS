@@ -829,8 +829,6 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
  *             schema: 
  *               type: object
  *               properties:
- *                 visitor_id:
- *                   type: string
  *                 visitor_name: 
  *                   type: string
  *                 visitor_phonenumber:
@@ -867,7 +865,7 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 
 		try
 		{
-			if(user == "visitor update fail" || user == "invalid username")
+			if(user == "visitor update fail")
 			{
 				return res.status(400).send("visitor update fail")
 			}
@@ -901,15 +899,6 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
  *         - user
  *       summary: Delete visitor (put the visitor id)
  *       description: "Delete a visitor account"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 visitor_id: 
- *                   type: string
  *       responses:
  *         200:
  *           description: "visitor deletion success"
@@ -925,13 +914,13 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user')
 	{
-		let user = await User.deletevisitor(req.token,req.body);
-		console.log('\nDelete visitor:',req.body);
+		let user = await User.deletevisitor(req.token);
+		console.log('\nDelete visitor by its user:',req.token._id);
 		console.log('Delete status:',user);
 
 		try
 		{
-			if(user == "visitor deletion fail" || user == "invalid username")
+			if(user == "visitor deletion fail")
 			{
 				return res.status(400).send("visitor deletion fail")
 			}
