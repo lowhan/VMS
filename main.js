@@ -29,9 +29,11 @@ const app = express() ;
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const jwt_decode = require('jwt-decode');
-var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmFjMmVkMWJhY2I2MWIyMTIxYTJlM2IiLCJsb2dpbl91c2VybmFtZSI6ImFkbWluIiwibG9naW5fcGFzc3dvcmQiOiIkMmEkMTAkYm41cnNjRTl1Vy9ST2pPbjhyYlE0T0g3NVlwRTh2bGNQd1lnZ1d0dDBubjl6bmZXSUJGcUciLCJzZWN1cml0eV9uYW1lIjoiSmFja3NvbiIsInNlY3VyaXR5X3Bob25lbnVtYmVyIjoiMDEyNDU2OTU2MiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY1NTQ4MzE1MywiZXhwIjoxNjU1NDg2NzUzfQ.XOk5IwQedLZQ68Mcg5Ydhh8gkcCsrYdFh5XGJ7dmxv4";
-var decoded = jwt_decode(token);
-console.log(decoded);
+
+// var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmFjMmVkMWJhY2I2MWIyMTIxYTJlM2IiLCJsb2dpbl91c2VybmFtZSI6ImFkbWluIiwibG9naW5fcGFzc3dvcmQiOiIkMmEkMTAkYm41cnNjRTl1Vy9ST2pPbjhyYlE0T0g3NVlwRTh2bGNQd1lnZ1d0dDBubjl6bmZXSUJGcUciLCJzZWN1cml0eV9uYW1lIjoiSmFja3NvbiIsInNlY3VyaXR5X3Bob25lbnVtYmVyIjoiMDEyNDU2OTU2MiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY1NTQ4MzE1MywiZXhwIjoxNjU1NDg2NzUzfQ.XOk5IwQedLZQ68Mcg5Ydhh8gkcCsrYdFh5XGJ7dmxv4";
+// var decoded = jwt_decode(token);
+// console.log(decoded);
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -97,6 +99,8 @@ app.get('/', (req, res) => {
  *       type: object
  *       properties:
  *         token: 
+ *           type: string
+ *         status:
  *           type: string
  */
 
@@ -273,6 +277,8 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
  *           type: string
  *         security_id:
  *           type: string
+ *         role:
+ *           type: string
  */
 
  /**
@@ -290,8 +296,9 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
  *         200:
  *           description: "View user successful"
  *           content:
- *             schema:
- *               $ref : '#/components/schemas/user'
+ *             application/json:
+ *               schema:
+ *                 $ref : '#/components/schemas/user'
  *         401:
  *           description: "Unauthorized"
  */
@@ -484,7 +491,7 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
 /**
  * @swagger
  * paths:
- *   /admin/visitor/updatepermission:
+ *   /admin/visitor/updatepermission/{user_id}:
  *     patch:
  *       security:
  *         - jwt: []
@@ -492,15 +499,12 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
  *         - admin
  *       summary: Update visit permission (put a user id to allow their visitor)
  *       description: "Update a visitor account"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 user_id: 
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           name: user_id
+ *           required: true
+ *           schema: 
+ *             type: string
  *       responses:
  *         200:
  *           description: "user update permission success"
@@ -513,11 +517,11 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
  */
 
 // update - visitor - permission (use token)
-app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
+app.patch('/admin/visitor/updatepermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Admin.updateuservisitor(req.body)
-		console.log("\nUpdate visitor:", req.body)
+		let admin = await Admin.updateuservisitor(req.params)
+		console.log("\nUpdate visitor:", req.params)
 		console.log("Update status:", admin)
 
 		try
@@ -548,23 +552,20 @@ app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
 /**
  * @swagger
  * paths:
- *   /admin/facility/updatefacilitypermission:
+ *   /admin/facility/updatefacilitypermission/{user_id}:
  *     patch:
  *       security:
  *         - jwt: []
  *       tags:
  *         - admin
- *       summary: Update facility permission (put a visitor id to allow their visitor)
+ *       summary: Update facility permission (put a user_id to allow their visitor)
  *       description: "Update facility"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 user_id: 
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           required: true
+ *           name: user_id
+ *           schema:
+ *             type: string
  *       responses:
  *         200:
  *           description: "facility permission update success"
@@ -577,11 +578,11 @@ app.patch('/admin/visitor/updatepermission',verifyToken, async (req, res) => {
  */
 
 // update - facility - permission (use token)
-app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, res) => {
+app.patch('/admin/facility/updatefacilitypermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Facility.updatefacilitypermission(req.token,req.body)
-		console.log("\nUpdate facility permission:", req.body)
+		let admin = await Facility.updatefacilitypermission(req.token,req.params)
+		console.log("\nUpdate facility permission:", req.params)
 		console.log("Update status:", admin)
 
 		try
@@ -612,23 +613,20 @@ app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, re
 /**
  * @swagger
  * paths:
- *   /admin/parking/updateparkingpermission:
+ *   /admin/parking/updateparkingpermission/{user_id}:
  *     patch:
  *       security:
  *         - jwt: []
  *       tags:
  *         - admin
  *       summary: Update parking permission (put a user id to allow their visitor)
- *       description: "Update parking"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 user_id: 
- *                   type: string
+ *       description: "Update parking permission"
+ *       parameters:
+ *         - in: path
+ *           required: true
+ *           name: user_id
+ *           schema:
+ *             type: string
  *       responses:
  *         200:
  *           description: "parking permission update success"
@@ -641,11 +639,11 @@ app.patch('/admin/facility/updatefacilitypermission',verifyToken, async (req, re
  */
 
 // update - parking - permission (use token)
-app.patch('/admin/parking/updateparkingpermission',verifyToken, async (req, res) => {
+app.patch('/admin/parking/updateparkingpermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Parking.updateparkingpermission(req.token,req.body)
-		console.log("\nUpdate parking permission:", req.body)
+		let admin = await Parking.updateparkingpermission(req.token,req.params)
+		console.log("\nUpdate parking permission:", req.params)
 		console.log("Update status:", admin)
 
 		try
@@ -1280,38 +1278,34 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 
 ///////////////////////////// visitor /////////////////////////////
 
-// view - access - swagger
+// view - access - swagger - params
 // need to type - user_id
 
 /**
  * @swagger
  * paths:
- *   /visitor/view:
+ *   /visitor/view/{user_id}:
  *     get:
+ *       description: Get visitor details by using user_id
+ *       summary: Get visitor by user_id
  *       tags:
  *         - general
- *       summary: View a visitor's access
- *       description: "View visitor access"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 user_id:
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           name: user_id
+ *           schema: 
+ *             type: string
+ *           required: true
  *       responses:
  *         200:
- *           description: "View visitor access success"
+ *           description: "Return visitor' details"
  *         403:
  *           description: "Forbidden"
  */
 
 // view - access
-app.get('/visitor/view', async(req,res) =>{
-	let visitor = await Visitor.visitorviewaccess(req.body)
-
+app.get('/visitor/view/:user_id', async(req,res) =>{
+	let visitor = await Visitor.visitorviewaccess(req.params)
 	try
 	{
 		return res.status(200).send(visitor);
@@ -1332,35 +1326,41 @@ app.get('/visitor/view', async(req,res) =>{
 /**
  * @swagger
  * paths:
- *   /facility/view:
+ *   /facility/view/{_id}:
  *     get:
  *       tags:
  *         - general
  *       summary: View a facility's access
  *       description: "View facility access"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           name: _id
+ *           required: true
+ *           schema:
+ *             type: string 
  *       responses:
  *         200:
- *           description: "View facility access success"
+ *           description: "Facility booking found"
+ *         400:
+ *           description: "No facility booking found"
  *         403:
  *           description: "Forbidden"
  */
 
 // view - facility 
-app.get('/facility/view', async(req,res) =>{
-	let view = await Facility.viewfacility(req.body) // _id : target
+app.get('/facility/view/:_id', async(req,res) =>{
+	let view = await Facility.viewfacility(req.params) // _id : target
 
 	try
 	{
-		return res.status(200).send(view); 
+		if(view == "facility view fail" )
+		{
+			return res.status(400).send("no facility booking found")
+		}
+		else
+		{
+			return res.status(200).send(view); 
+		}
 	}
 	catch(err)
 	{
@@ -1376,7 +1376,7 @@ app.get('/facility/view', async(req,res) =>{
 /**
  * @swagger
  * paths:
- *   /facility/delete:
+ *   /facility/delete/{user_id}:
  *     delete:
  *       security:
  *         - jwt: []
@@ -1384,15 +1384,12 @@ app.get('/facility/view', async(req,res) =>{
  *         - admin/user
  *       summary: Delete a facility booking
  *       description: "Delete facility booking"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 user_id:
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           name: user_id
+ *           schema:
+ *             type: string
+ *           required: true
  *       responses:
  *         200:
  *           description: "facility delete success"
@@ -1405,11 +1402,11 @@ app.get('/facility/view', async(req,res) =>{
  */
 
 // delete - facility (use token)  
-app.delete('/facility/delete',verifyToken,async(req,res) =>{
+app.delete('/facility/delete/:user_id',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user'||req.token.role=='admin')
 	{
-		let facility = await Facility.deletefacility(req.body)
-		console.log('\nFacility delete:',req.body);
+		let facility = await Facility.deletefacility(req.params)
+		console.log('\nFacility delete:',req.params);
 		console.log('Facility delete status:',facility);
 
 		try
@@ -1443,35 +1440,41 @@ app.delete('/facility/delete',verifyToken,async(req,res) =>{
 /**
  * @swagger
  * paths:
- *   /parking/view:
+ *   /parking/view/{_id}:
  *     get:
  *       tags:
  *         - general
  *       summary: View a parking's access
  *       description: "View parking access"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           required: true
+ *           name: _id
+ *           schema: 
+ *             type: string
  *       responses:
  *         200:
- *           description: "View parking access success"
+ *           description: "Parking booking found success"
+ *         400:
+ *           description: "No parking booking found"
  *         403:
  *           description: "Forbidden"
  */
 
 // view - parking 
-app.get('/parking/view',async(req,res) =>{
-	let view = await Parking.viewparking(req.body) // _id : target
+app.get('/parking/view/:_id',async(req,res) =>{
+	let view = await Parking.viewparking(req.params) // _id : target
 
 	try
 	{
-		return res.status(200).send(view);
+		if(view == "parking view fail" )
+		{
+			return res.status(400).send("no parking booking found")
+		}
+		else
+		{
+			return res.status(200).send(view);
+		}
 	}
 	catch(err)
 	{
@@ -1487,7 +1490,7 @@ app.get('/parking/view',async(req,res) =>{
 /**
  * @swagger
  * paths:
- *   /parking/delete:
+ *   /parking/delete/{user_id}:
  *     delete:
  *       security:
  *         - jwt: []
@@ -1495,15 +1498,12 @@ app.get('/parking/view',async(req,res) =>{
  *         - admin/user
  *       summary: Delete a parking booking
  *       description: "Delete parking booking"
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema: 
- *               type: object
- *               properties:
- *                 user_id:
- *                   type: string
+ *       parameters:
+ *         - in: path
+ *           name: user_id
+ *           schema:
+ *             type: string
+ *           required: true
  *       responses:
  *         200:
  *           description: "parking delete success"
@@ -1516,11 +1516,11 @@ app.get('/parking/view',async(req,res) =>{
  */
 
 // delete - parking (use token)  
-app.delete('/parking/delete',verifyToken,async(req,res) =>{
+app.delete('/parking/delete/:user_id',verifyToken,async(req,res) =>{
 	if(req.token.role == 'user'||req.token.role == 'admin')
 	{
-		let parking = await Parking.deleteparking(req.body)
-		console.log('\nParking delete:',req.body);
+		let parking = await Parking.deleteparking(req.params)
+		console.log('\nParking delete:',req.params);
 		console.log('Parking delete status:',parking);
 
 		try

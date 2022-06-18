@@ -7,9 +7,15 @@ class Visitor {
 	}
 
 	static async visitorviewaccess(userId) {
-		return await visitors.findOne({ 'user_id' : userId.user_id }).then(async visitoraccess => 
-		{
-			return visitoraccess;
+		return await visitors.findOne({ 'user_id' : userId.user_id }).then(async visitoraccess => {
+			if(visitoraccess)
+			{
+				return visitoraccess;
+			}
+			else
+			{
+				return "no visitor found";
+			}
 		});
 	}
 }
