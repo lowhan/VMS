@@ -29,7 +29,7 @@ const badusersample_user = {					// baduser sample with bad login_username
     login_username : "baduser",					
 	login_password : "password1",
     user_name:"user_ali",
-	user_phonenumer : "011-1234567",
+	user_phonenumber : "011-1234567",
     role : "user",
 }
 
@@ -46,7 +46,14 @@ describe("Admin Account Management", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
+<<<<<<< Updated upstream
 			"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+=======
+			//"mongodb+srv://m001-student:m001-mongodb-basics@sandbox.jx2e8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
+
+>>>>>>> Stashed changes
 			{ useNewUrlParser: true },
 		);
 		Admin.injectDB(client);
@@ -56,19 +63,19 @@ describe("Admin Account Management", () => {
 	})
 
 	// admin
-	// create
+	//create
 	// test("Admin create - success", async () => {
 	// 	const res = await Admin.createadmin(newsample_admin);
 	// 	expect(res).toBe("admin creation success");
 	// })
 
-	// login
+	/////////login
     // test("Admin login - success", async () => {
 	// 	const res = await Admin.loginadmin(newsample_admin);
 	// 	expect(res.login_username).toBe(newsample_admin.login_username);
 	// })
 
-	// read
+	////////////// read
 	// test("Admin view - success", async () => {
 	// 	const res = await Admin.viewuser();
 	// 	expect(res).toContainEqual(expect.any(Object));
@@ -77,7 +84,7 @@ describe("Admin Account Management", () => {
 	// ///////////////////////////////////////////////////////////////
 	// // user 
 
-	// // create 
+	/////////create 
 	// test("User Registration - success - new username", async () => {
 	// 	const res = await Admin.createuser(newsample_admin,newsample_user);
 	// 	expect(res).toBe("user creation success");
@@ -98,7 +105,7 @@ describe("Admin Account Management", () => {
 	// // update - match & update
 
 	// test("User Update - success", async () => {
-	// 	const res = await Admin.updateuser(newsample_user,updatesample_user);
+	// 	const res = await Admin.updateuser(badusersample_user);
 	// 	expect(res).toBe("user update success");
 	// })
 
@@ -107,16 +114,17 @@ describe("Admin Account Management", () => {
 	// 	expect(res).toBe("invalid username");  //no user found
 	// })
 
-	// // delete - match & delete
-	// test("User Delete - fail", async () => {
-	// 	const res = await Admin.deleteuser(badusersample_user);
-	// 	expect(res).toBe("invalid username");     // no user found
-	// })
+	//////delete - match & delete
 	
 	// test("User Delete - success", async () => {
 	// 	const res = await Admin.deleteuser(newsample_user);
 	// 	expect(res).toBe("user deletion success");
 	// })			
+	
+	// test("User Delete - fail", async () => {
+	// 	const res = await Admin.deleteuser(badusersample_user);
+	// 	expect(res).toBe("invalid username");     // no user found
+	// })
 	
 	///////////////////////////////////////////////////////////////
 	// visitor

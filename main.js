@@ -9,7 +9,8 @@ const jwt = require('jsonwebtoken');                // JWT token
 
 // connection
 MongoClient.connect( 
-	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+	//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+	"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -516,7 +517,7 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
 app.patch('/admin/visitor/updatepermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Admin.updateuservisitor(req.params)
+		let admin = await Admin.updateuservisitorpermission(req.params)
 		console.log("\nUpdate visitor:", req.params)
 		console.log("Update status:", admin)
 
@@ -1558,7 +1559,7 @@ app.listen(port, () => {
 ///////////////////////////////jwt - authentication and authorization////////////////////////////
 
 function generateAccessToken(payload) {
-	return jwt.sign(payload, "my-super-secret", { expiresIn: '12h'}); // set expire time duration
+	return jwt.sign(payload, "my-super-secret", { expiresIn: '2h'}); // set expire time duration
 }
 
 function verifyToken(req, res, next) {

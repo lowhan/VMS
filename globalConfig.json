@@ -1,1 +1,5 @@
+<<<<<<< Updated upstream
 {"mongoUri":"mongodb://127.0.0.1:59279/"}
+=======
+{"mongoUri":"mongodb://127.0.0.1:63851/"}
+>>>>>>> Stashed changes

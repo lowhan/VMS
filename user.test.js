@@ -42,7 +42,8 @@ describe("User Account Management", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-			"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
 			{ useNewUrlParser: true },
 		);
 		User.injectDB(client);
@@ -69,7 +70,7 @@ describe("User Account Management", () => {
 
 	////////////////////Create visitor//////////////////
 	// test("User - Visitor creation  - success - new visitor", async () => {
-	// 	const res = await User.createvistor(sampleuser,samplevisitor);
+	// 	const res = await User.createvisitor(sampleuser,samplevisitor);
 	// 	expect(res).toBe("visitor creation success");
 	// })	
 
@@ -110,7 +111,11 @@ describe("User Account Management", () => {
 	// })
 	
 	// test("User - Visitor Deletion - success", async() => {
+<<<<<<< Updated upstream
     // const res = await User.deletevisitor(sampleuser);
+=======
+    // const res = await User.deletevisitor(samplevisitor);
+>>>>>>> Stashed changes
 	// expect(res).toBe("visitor deletion success");
 	// })
 });

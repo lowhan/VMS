@@ -8,7 +8,12 @@ const token = {            							 // admin token sample
 }
 
 const detail = {
+<<<<<<< Updated upstream
     'visitor_id' : "visitor1", 						 // detail sample for updating
+=======
+	'user_id':''
+    'visitor_id' : "visitor1", 	// insert by user
+>>>>>>> Stashed changes
     'carplate_number': "detail.carplate_number",
     'parking_lot': "detail.parking_lot",
     'parking_access_permission': "no_access",
@@ -20,7 +25,8 @@ describe("VMS - TDD - parking test", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-			"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
 			{ useNewUrlParser: true },
 		);
 		Parking.injectDB(client);
@@ -74,10 +80,10 @@ describe("VMS - TDD - parking test", () => {
     // ///////////////////////////////////////////////////////////////
 	// // update permission - parking //
 
-	// test("Update parking permission - success", async () => {
-	// 	const res = await Parking.updateparkingpermission(token,detail);
-	// 	expect(res).toBe("parking permission update success");
-	// })
+	test("Update parking permission - success", async () => {
+		const res = await Parking.updateparkingpermission(token,detail);
+		expect(res).toBe("parking permission update success");
+	})
 
     // test("Update parking permission - fail", async () => {
 	// 	const res = await Parking.updateparkingpermission(token,detail);

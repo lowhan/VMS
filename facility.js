@@ -87,7 +87,7 @@ class Facility {
 			{
 				await facilities.updateOne({'user_id' : facility.user_id},{ // update user to database
 					$set:{
-						'facility_access_permission' : facility.facility			 
+						'facility_access_permission' : facility			 
 					}	 							
 				})
 				return "facility permission update success";
