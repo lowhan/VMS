@@ -176,7 +176,7 @@ app.post('/admin/login', async (req,res) =>{
  *           description: "No admin exists in database"
  */
 
-// view (use token)
+// view 
 app.get('/admin/view',async(req,res) =>{
 	let view = await Admin.viewadmin()
 	res.send(view);
