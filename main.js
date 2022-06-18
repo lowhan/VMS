@@ -706,12 +706,8 @@ app.patch('/admin/parking/updateparkingpermission/:user_id',verifyToken, async (
 // login - user (generate token)
 app.post('/user/login', async (req,res) =>{
 	const user = await User.loginuser(req.body);
-<<<<<<< Updated upstream
-	console.log('\nLogin user:', req.body); //check in console
-=======
 	console.log('\nLogin admin:', req.body); //check in console
 	console.log('Login status:', user)
->>>>>>> Stashed changes
 	if (user == "invalid username"|| user =='invalid password')
 	{   
 		console.log("user login fail")
