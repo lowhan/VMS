@@ -139,7 +139,7 @@ app.get('/', (req, res) => {
 app.post('/admin/login', async (req,res) =>{
 	const admin = await Admin.loginadmin(req.body);
 	console.log('\nLogin admin:', req.body); //check in console
-	console.log('Login status', admin)
+	console.log('Login status:', admin)
 	if (admin == "invalid username"|| admin =='invalid password')
 	{
 		return res.status(400).send("admin login fail")
