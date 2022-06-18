@@ -1,4 +1,4 @@
-
+//////////////////main function of parking//////////////////////
 let users, parkings;
 
 class Parking {
@@ -10,7 +10,7 @@ class Parking {
 	// create parking
 	static async createparking(token,detail) {		
 		return parkings.findOne({								 
-				'user_id': token._id					// only can be use by user
+				'user_id': token._id					// only can be used by user
 		}).then(async parking =>{
 			if (parking) 
 			{
@@ -18,7 +18,7 @@ class Parking {
 			}
 			else
 			{
-				await parkings.insertOne({	 			// Save user to database				
+				await parkings.insertOne({	 			// Save facility booking to database				
 					'user_id' : token._id,
 					'security_id' : token.security_id,
 					'visitor_id' : detail.visitor_id, 	// insert by user
@@ -34,7 +34,7 @@ class Parking {
 	}
 
 	// view parking
-	static async viewparking(token) {				// token or detail in json (for visitor)	
+	static async viewparking(token) {					
 		return parkings.findOne({								 
 			$or : 
 			[
@@ -55,13 +55,13 @@ class Parking {
 	}
 
 	// update parking details
-	static async updateparkingdetail(token,detail) {		// token or detail in json (for visitor)	
+	static async updateparkingdetail(token,detail) {	// details = update info for the parking booking	
 		return parkings.findOne({								 
-			'user_id': token._id					// only can be use by user
+			'user_id': token._id					// only can be used by user
 		}).then(async parking =>{
 			if (parking) 
 			{
-				await parkings.updateOne({'user_id' : parking.user_id},{ // update user to database
+				await parkings.updateOne({'user_id' : parking.user_id},{ // update parking booking to database
 					$set:{			 
 						'carplate_number': detail.carplate_number,
 						'parking_lot': detail.parking_lot,
@@ -80,7 +80,7 @@ class Parking {
 
 	// update parking permission for admin
 	static async updateparkingpermission(token,detail) {		// token = with admin role	
-		return parkings.findOne({									// detail = which visitor's permission is allowed
+		return parkings.findOne({								// detail = which visitor's permission is allowed
 			$and : 	
 			[
 				{ 'user_id': detail.user_id },
@@ -98,14 +98,16 @@ class Parking {
 			}
 			else
 			{
-				return "parking permission update fail"; 				 // visitor_id not found @ token is not belong to admin/security
+				return "parking permission update fail"; 	// nothing to update
 			}
 		})	
 	}
 
 	// delete parking
-	static async deleteparking(detail) {		
-		return parkings.findOne({ 'user_id' : detail.user_id }).then(async parking =>{
+	static async deleteparking(detail) {		 // detail = user_id
+		return parkings.findOne({ 
+			'user_id' : detail.user_id 
+		}).then(async parking =>{
 			if (parking) 
 			{
 				await parkings.deleteOne({ 

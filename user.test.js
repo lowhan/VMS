@@ -2,28 +2,17 @@ const MongoClient = require("mongodb").MongoClient;
 const User = require("./user");
 
 //sample data  
-
-const sampleuser = {						// new sample for register success, login success, delete success
+const sampleuser = {							// new user sample
     _id : "62aafe1fb1082983abec82cd",
 	security_id:"62aafc8472263b2a3ed6e658",
-    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
+    login_username : "usertest3",				 
 	login_password : "password3",
     user_name : "user_ali",
 	user_phonenumber: "011-1234567",
     role : "user",
 }
 
-const badpassworduser = {						// new sample for register success, login success, delete success
-    _id : "62aafe1fb1082983abec82cd",
-	security_id:"secure_1",
-    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
-	login_password : "badpassword",
-    user_name : "user_ali",
-	user_phonenumber: "011-1234567",
-    role : "user",
-}
-
-const samplevisitor = {				
+const samplevisitor = {							 // new visitor sample
 	'visitor_name' : 'visitor1',
 	'visitor_phonenumber' : '0124685214',
 	'number_of_visitors' : 5,
@@ -32,20 +21,21 @@ const samplevisitor = {
 	'end_time' : '16/4/22'
 }
 
-const updatedocument = {
-	'visitor_id':'62ab3b290983751028fff1c6', // target visitor
+const updatedocument = {						 // detail sample for updating
 	'number_of_visitors' : 2,
 	'room_info' : 'A101',
 	'arrival_time' : '5/1/22',
 	'end_time' : '10/2/22'
 }
 
-const wrongidupdatedocument = {
-	'visitor_id':'thisiddoesntexist', // target visitor
-	'number_of_visitors' : 2,
-	'room_info' : 'A101',
-	'arrival_time' : '5/1/22',
-	'end_time' : '10/2/22'
+const badsampleuser = {							 // bad user sample
+    _id : "62aafe1sdasdasdasdc82cd",
+	security_id:"62aafc8asdsdsadsda3ed6e658",
+    login_username : "udsadst3",				 
+	login_password : "paasdrd3",
+    user_name : "user_ali",
+	user_phonenumber: "011-1234567",
+    role : "user",
 }
 
 describe("User Account Management", () => {
@@ -84,7 +74,7 @@ describe("User Account Management", () => {
 	// })	
 
 	// test("User - Visitor creation - fail - duplicate", async () => {
-	// 	const res = await User.register(sampleuser,badpassworduser);
+	// 	const res = await User.register(sampleuser,samplevisitor);       // use same user sample to make the test success
 	// 	expect(res).toBe("visitor creation fail");
 	// })
 
@@ -95,7 +85,7 @@ describe("User Account Management", () => {
 	// })
 	
 	// test("User - Visitor Update - fail", async () => {
-	// 	const res = await User.updatevisitor(sampleuser, wrongidupdatedocument);
+	// 	const res = await User.updatevisitor(badsampleuser, updatedocument);
 	// 	try
 	// 	{
 	// 		expect(res).toBe("visitor update fail");
@@ -108,7 +98,7 @@ describe("User Account Management", () => {
 
 	///////////////Delete Visitor///////////////////////
 	// test("User - Visitor Deletion - fail", async () => {
-	// 	const res = await User.deletevisitor(sampleuser,wrongidupdatedocument);
+	// 	const res = await User.deletevisitor(badsampleuser);
 	// 	try
 	// 	{
 	// 		expect(res).toBe("visitor deletion fail");
@@ -120,7 +110,7 @@ describe("User Account Management", () => {
 	// })
 	
 	// test("User - Visitor Deletion - success", async() => {
-    // const res = await User.deletevisitor(sampleuser,updatedocument);
+    // const res = await User.deletevisitor(sampleuser);
 	// expect(res).toBe("visitor deletion success");
 	// })
 });

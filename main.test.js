@@ -35,14 +35,12 @@ const user_sample = {						// new sample for register success, login success, de
 }
 
 const visitor_sample ={
-	
 		Visitor_Name:"Sherlock",
 		Visitor_PhoneNumber:"011-222333444",
 		Number_of_Visitors:"3",
 		Room_info:"Blok A-223",
 		Arrival_Time:"22/2/2022",
 		End_Time:"31/2/2022"
-	 
 }
 
 const facility_sample = {
@@ -57,9 +55,7 @@ parking_sample = {
    "parking_lot":"1",
    "arrival_time":"22/2/2022",
    "end_time":"3/4/2022" 
-
 }
-
 
 describe('Express Route Test', function () {
 
@@ -365,6 +361,4 @@ describe('Express Route Test', function () {
 				expect(res.text).toBe("Unauthorized");
 			});
 	});
-
-
 });

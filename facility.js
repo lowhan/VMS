@@ -1,3 +1,4 @@
+//////////////////main function of facility//////////////////////
 let users, facilities;
 
 class Facility {
@@ -9,7 +10,7 @@ class Facility {
     // create facility
 	static async createfacility(token,detail) {		
 		return facilities.findOne({								 
-				'user_id': token._id						// only can be use by user
+				'user_id': token._id						// only can be used by user
 		}).then(async facility =>{
 			if (facility) 
 			{
@@ -17,7 +18,7 @@ class Facility {
 			}
 			else
 			{
-				await facilities.insertOne({	 			// Save user to database				
+				await facilities.insertOne({	 			// Save the booking to database				
 					'user_id' : token._id,
 					'visitor_id' : detail.visitor_id, 		// insert by user
                     'security_id' : token.security_id,	
@@ -31,7 +32,7 @@ class Facility {
 	}
 
     // view facility
-	static async viewfacility(token) {				// token or detail in json 	
+	static async viewfacility(token) {					
 		return facilities.findOne({								 
 			$or : 
 			[
@@ -52,13 +53,13 @@ class Facility {
 	}
 
     // update facility details
-	static async updatefacilitydetail(token,detail) {		// token or detail in json (for user)
+	static async updatefacilitydetail(token,detail) {		// token with update detail
 		return facilities.findOne({								 
 			'user_id': token._id					
 		}).then(async facility =>{
 			if (facility) 
 			{
-				await facilities.updateOne({'user_id' : facility.user_id},{ // update user to database
+				await facilities.updateOne({'user_id' : facility.user_id},{ // update facility booking to database
 					$set:{ 			 
 						'number_of_participants': detail.number_of_participants,
 						'facility': detail.facility
@@ -68,7 +69,7 @@ class Facility {
 			}
 			else
 			{
-				return "facility update fail"; 								// nothing to update
+				return "facility update fail"; 								// not target to update
 			}
 		})	
 	}

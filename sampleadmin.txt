@@ -1,0 +1,22 @@
+preset sample admin
+
+1
+
+login_username = admin
+login_password = passwordfromadmin
+security_name = Jackson
+security_phonenumber = 0124569562
+
+2
+
+login_username = subadmin
+login_password = passwordfromsubadmin
+security_name = Jack
+security_phonenumber = 012695654
+
+3
+
+login_username = administrator
+login_password = passwordfromadministrator
+security_name = Charles
+security_phonenumber = 0178956240

@@ -2,30 +2,29 @@ const MongoClient = require("mongodb").MongoClient;
 const Admin = require("./admin"); 
 
 //sample data  
-const newsample_admin = {	
-	//_id: "62aafc8472263b2a3ed6e658",	   
-    login_username : "admin",				// make sure this data is not exist in your mongodb 
-	login_password : "passwordfromadmin",
-    security_name: "Jackson",
-	security_phonenumber : "0124569562",
+const newsample_admin = {						// new admin sample   
+    login_username : "administrator",					
+	login_password : "passwordfromadministrator",
+    security_name: "Charles",
+	security_phonenumber : "0178956240",
 }
 
-const newsample_user = {						// new sample for register success, login success, delete success
+const newsample_user = {						// new user sample
     _id : "62aafe1fb1082983abec82cd",
 	security_id:"secure_1",
-    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
+    login_username : "usertest3",				 
 	login_password : "password3",
     user_name : "user_ali",
 	user_phonenumber: "011-1234567",
     role : "user",
 }
 
-const updatesample_user = {					// update sample for update success
+const updatesample_user = {						// update detail sample 
     user_name: "user_ali",
 	user_phonenumber : "999"
 }
 
-const badusersample_user = {					// badusersample for login fail (invalid username)
+const badusersample_user = {					// baduser sample with bad login_username
 	security_id : "secure_1",
     login_username : "baduser",					
 	login_password : "password1",
@@ -34,9 +33,9 @@ const badusersample_user = {					// badusersample for login fail (invalid userna
     role : "user",
 }
 
-const badpasswordsample_user = {				// badpsample for register fail, login fail (invalid password)
+const badpasswordsample_user = {				// badpassword sample with bad login_password
 	security_id : "secure_1",
-    login_username : "usertest3",				       // update fail, delete fail 
+    login_username : "usertest3",				
 	login_password : "badpassword",
     user_name:"user_ali",
 	user_phonenumber : "011-1234567",
@@ -47,7 +46,6 @@ describe("Admin Account Management", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-			//"mongodb+srv://m001-student:m001-mongodb-basics@sandbox.jx2e8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 			"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 			{ useNewUrlParser: true },
 		);

@@ -1,18 +1,18 @@
 const MongoClient = require("mongodb").MongoClient;
 const Facility = require("./facility");
 
-//sample
-const token = {						// user sample
-    _id : "62aafe1fb1082983abec82cd",
+//sample data
+const token = {									// user token sample
+    _id : "62aafe1fb1082983abec82cd", 		
 	security_id:"62aafc8472263b2a3ed6e658",
-    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
+    login_username : "usertest3",				
 	login_password : "password3",
     user_name : "user_ali",
 	user_phonenumber: "011-1234567",
     role : "user",
 }
 
-const admintoken = {
+const admintoken = {                            // admin token sample
 	"_id":"62aafc8472263b2a3ed6e658",
 	"login_username":"usertest2",
 	"login_password":"password1",
@@ -21,10 +21,10 @@ const admintoken = {
 	"role":"admin"
 }
 
-const badtoken = {						// bad sample
+const badtoken = {								// bad token sample
     _id : "badid",
 	security_id:"bad",
-    login_username : "usertest3",				// make sure this data is not exist in your mongodb 
+    login_username : "usertest3",				
 	login_password : "password3",
     user_name : "user_ali",
 	user_phonenumber: "011-1234567",
@@ -32,7 +32,7 @@ const badtoken = {						// bad sample
 }
 
 const detail = {
-    'visitor_id' : "62ab3b290983751028fff1c6", 	// insert by user
+    'visitor_id' : "62ab3b290983751028fff1c6", 	// detail sample for updating
     'number_of_participants': 3,
     'facility': "gym",
 }
@@ -51,9 +51,9 @@ describe("VMS - TDD - facility test", () => {
 	})
 
 	///////////////////////////////////////////////////////////////
-					// create - facility //
+	// // create - facility //
 
-	// test("Create facility detail - success", async () => { //success
+	// test("Create facility detail - success", async () => { 
 	// 	const res = await Facility.createfacility(token,detail);
 	// 	expect(res).toBe("facility creation success");
 	// })
@@ -64,9 +64,9 @@ describe("VMS - TDD - facility test", () => {
 	// })
 
     ////////////////////////////////////////////////////////////////
-                        // view - parking //
+    // // view - parking //
 
-	// test("view facility detail - success", async () => { //success
+	// test("view facility detail - success", async () => { 
 	// 	const res = await Facility.viewfacility(token);
 	// 	expect(res.number_of_participants).toEqual(expect.any(Number)); 
 	// 	expect(res.user_id).toEqual(expect.any(String)); 
@@ -80,7 +80,7 @@ describe("VMS - TDD - facility test", () => {
 	// })
 
     // ///////////////////////////////////////////////////////////////
-	// 				// update detail - parking //
+	// // update detail - parking //
 
 	// test("Update facility detail - success", async () => {
 	// 	const res = await Facility.updatefacilitydetail(token,detail);
@@ -93,7 +93,7 @@ describe("VMS - TDD - facility test", () => {
 	// })
 
 	// ///////////////////////////////////////////////////////////////
-	// 			// update permission - facility //
+	// // update permission - facility //
 
 	// test("Update facility permission - success", async () => {
 	// 	const res = await Facility.updatefacilitypermission(admintoken,detail);
@@ -106,7 +106,7 @@ describe("VMS - TDD - facility test", () => {
 	// })
 
     // ///////////////////////////////////////////////////////////////
-	// 			// delete - parking //
+	// // delete - parking //
 
     // test("delete facility- fail", async () => {
 	// 	const res = await Facility.deletefacility(badtoken);

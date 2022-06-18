@@ -1,4 +1,4 @@
-
+//////////////////main function of visitor//////////////////////
 let visitors;
 
 class Visitor {
@@ -10,7 +10,7 @@ class Visitor {
 		return await visitors.findOne({ 'user_id' : userId.user_id }).then(async visitoraccess => {
 			if(visitoraccess)
 			{
-				return visitoraccess;
+				return visitoraccess; // all visitors related to the user
 			}
 			else
 			{

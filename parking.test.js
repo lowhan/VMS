@@ -1,14 +1,14 @@
 const MongoClient = require("mongodb").MongoClient;
 const Parking = require("./parking");
 
-//sample
-const token = {             //carrying user details
+//sample data
+const token = {            							 // admin token sample
     "_id" : "user1",
     "security_id":"admin1"
 }
 
 const detail = {
-    'visitor_id' : "visitor1", 	// insert by user
+    'visitor_id' : "visitor1", 						 // detail sample for updating
     'carplate_number': "detail.carplate_number",
     'parking_lot': "detail.parking_lot",
     'parking_access_permission': "no_access",
@@ -30,7 +30,7 @@ describe("VMS - TDD - parking test", () => {
 	})
 
 	///////////////////////////////////////////////////////////////
-					// create - parking //
+	// // create - parking //
 
 	// test("Create parking detail - success", async () => {
 	// 	const res = await Parking.createparking(token,detail);
@@ -43,7 +43,7 @@ describe("VMS - TDD - parking test", () => {
 	// })
 
     // ///////////////////////////////////////////////////////////////
-	// 				// view - parking //
+	// // view - parking //
 
 	// test("view parking detail - success", async () => {
 	// 	const res = await Parking.viewparking(token);
@@ -59,7 +59,7 @@ describe("VMS - TDD - parking test", () => {
 	// })
 
     // ///////////////////////////////////////////////////////////////
-	// 				// update detail - parking //
+	// // update detail - parking //
 
 	// test("Update parking detail - success", async () => {
 	// 	const res = await Parking.updateparkingdetail(token,detail);
@@ -72,7 +72,7 @@ describe("VMS - TDD - parking test", () => {
 	// })
 
     // ///////////////////////////////////////////////////////////////
-	// 			// update permission - parking //
+	// // update permission - parking //
 
 	// test("Update parking permission - success", async () => {
 	// 	const res = await Parking.updateparkingpermission(token,detail);
@@ -85,7 +85,7 @@ describe("VMS - TDD - parking test", () => {
 	// })
 
     // ///////////////////////////////////////////////////////////////
-	// 			// delete - parking //
+	// // delete - parking //
 
 	// test("delete parking - success", async () => {
 	// 	const res = await Parking.deleteparking(token);
@@ -96,5 +96,4 @@ describe("VMS - TDD - parking test", () => {
 	// 	const res = await Parking.deleteparking(detail);
 	// 	expect(res).toBe("parking deletion fail");
 	// })
-
 });

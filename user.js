@@ -38,7 +38,7 @@ class User {
 	////////////////////////////////////////////////////////////
 
 	// create visitor - C
-	static async createvisitor(user,visitor) {	// Only delete when username and password are matched 
+	static async createvisitor(user,visitor) {
 		return visitors.findOne({
 			'user_id' : user._id
 		}).then(async res =>{
@@ -48,7 +48,7 @@ class User {
 			}
 			else 
 			{
-				await visitors.insertOne(
+				await visitors.insertOne( // Insert visitor
 				{	
 					'user_id' : user._id,
 					'security_id' : user.security_id,
@@ -66,9 +66,9 @@ class User {
 	}
 
 	//Update Visitor - U
-	static async updatevisitor(token,target) {	// Only update when username and password are matched
+	static async updatevisitor(token,target) {	// target = detail of visitors
 		return visitors.findOne({			
-			'user_id': token._id 				//'visitor_name': token.visitor_name				
+			'user_id': token._id 						
 	}).then(async visitor =>{
 		if (visitor) 
 		{ 			 
@@ -98,7 +98,7 @@ class User {
 	}
 	
 	// delete visitor - D
-	static async deletevisitor(token) {	// (visitor and users) Only delete when username and password are matched
+	static async deletevisitor(token) {	// delete the visitor of the specified user
 		return visitors.findOne({								
 			'user_id': token._id		
 		}).then(async visitor =>{
@@ -107,7 +107,7 @@ class User {
 				await visitors.deleteOne({'_id':visitor._id});
 				return "visitor deletion success";
 			}
-			else // if user doesn't exists
+			else // if visitor doesn't exists
 			{
 				return "visitor deletion fail";
 			} 
@@ -115,7 +115,7 @@ class User {
 	}
 
 	// view visitor - R
-	static async viewvisitor (user) {//view the visitor of the specified user
+	static async viewvisitor (user) { //view the visitor of the specified user
 		return visitors.find(
 			{
 				'user_id' : user._id

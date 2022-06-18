@@ -1,4 +1,4 @@
-//////////////////main function of admin//////////////////////
+//////////////////main function of admin/security//////////////////////
 let admins, users, visitors;
 const { hash } = require("bcrypt");
 const bcrypt = require("bcryptjs")
@@ -14,7 +14,7 @@ class Admin {
 	}
 
     //admin
-	//create
+	//create used in backend... can't set as endpoint to let hacker create account as admin/security
 	static async createadmin(admin) {		
 		//Hash password	
 		bcrypt.genSalt(saltRounds, function (saltError, salt) {  
@@ -119,11 +119,9 @@ class Admin {
 					}
 				})
 			}
-		});	
-		// search for duplicate
-		//console.log(user.login_username)
+		});
 		return users.findOne({								
-			'login_username': user.login_username				
+			'login_username': user.login_username	// search for duplicate			
 		}).then(async res =>{
 			if (res) // duplicate
 			{ 			
@@ -133,7 +131,7 @@ class Admin {
 			{
 				await users.insertOne({	
 					'login_username' : user.login_username,
-					'login_password' : encrypt,       // from user.username
+					'login_password' : encrypt,       
 					'user_name' : user.user_name,
 					'user_phonenumber' : user.user_phonenumber,	
 					'security_id' : admin._id,
@@ -163,7 +161,7 @@ class Admin {
 		}).then(async user =>{
 			if (user) // Validate username
 			{ 			
-				await users.deleteOne({'login_username': user.login_username}); // no need compare password, admin is the top admin
+				await users.deleteOne({'login_username': user.login_username}); 
 				return "user deletion success";
 			}
 			else // if user doesn't exists
@@ -209,7 +207,7 @@ class Admin {
 		return visitors.find({}).toArray().then(async visitor =>{ 
 			try
 			{
-				return visitor;
+				return visitor; // return all existing visitors
 			}
 			catch
 			{
@@ -219,7 +217,7 @@ class Admin {
 	}
 
 	// update visitor permission - U
-	static async updateuservisitor(sample) {	// Only update when username and password are matched
+	static async updateuservisitor(sample) {
 		return visitors.findOne({								
 			'user_id': sample.user_id				
 		}).then(async visitor =>{
@@ -237,9 +235,9 @@ class Admin {
 						} 
 					}		   
 				);
-				return "user update permission success";
+				return "visitor update permission success";
 			}
-			else // if user doesn't exists
+			else // if user doesn't have visitor
 			{
 				return "invalid username";
 			} 

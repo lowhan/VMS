@@ -48,8 +48,8 @@ const option = {
 			title: 'Visitor Management System',
 			description: 
 				'This is a simple visitor management system that can be applied on the university '+
-				'student to invite their family or friend to come over here and security guard in the' +
-				'uni will act as the admin of the system to control most of the functions'
+				'student to invite their family or friend to come over here and security guard in the ' +
+				'university will act as the admin of the system to control most of the functions'
 			,
 			servers: ["http://localhost:3000"],
 		},
@@ -508,9 +508,9 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
  *             type: string
  *       responses:
  *         200:
- *           description: "user update permission success"
+ *           description: "visitor update permission success"
  *         400:
- *           description: "user update permission fail"
+ *           description: "visitor update permission fail"
  *         401:
  *           description: "Unauthorized"
  *         403:
@@ -529,11 +529,11 @@ app.patch('/admin/visitor/updatepermission/:user_id',verifyToken, async (req, re
 		{
 			if(admin == "invalid username")
 			{
-				return res.status(400).send("user update permission fail")
+				return res.status(400).send("visitor update permission fail")
 			}
-			else if(admin =="user update permission success")
+			else if(admin =="visitor update permission success")
 			{
-				return res.status(200).send("user update permission success")
+				return res.status(200).send("visitor update permission success")
 			}
 		}
 		catch (err)
@@ -924,7 +924,7 @@ app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 			{
 				return res.status(400).send("visitor deletion fail")
 			}
-			else if (user == "visitor update success")
+			else if (user == "visitor deletion success")
 			{
 				return res.status(200).send("visitor deletion success")
 			}
