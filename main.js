@@ -40,11 +40,11 @@ const option = {
 	definition: {
 		openapi:'3.0.0',
 		info: {
-			title: 'Visitor Management System',
+			title: 'University Visitor Management System',
 			description: 
-				'This is a simple visitor management system that can be applied on the university '+
-				'student to invite their family or friend to come over here and security guard in the ' +
-				'university will act as the admin of the system to control most of the functions'
+				'This is a simple visitor management system that can be applied on the university which student invite '+
+				'their family or friend to come over here and this server is used to ask permissions from security guard. However, in the ' +
+				'university, security will act as the admin of the system to control most of the functions'
 			,
 			servers: ["http://localhost:3000"],
 		},
@@ -758,10 +758,10 @@ app.post('/user/login', async (req,res) =>{
  *                   example: "Blok A-000"
  *                 arrival_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *                 end_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *       responses:
  *         200:
  *           description: "visitor creation success"
@@ -836,10 +836,10 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
  *                   example: "Blok A-000"
  *                 arrival_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *                 end_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *       responses:
  *         200:
  *           description: "visitor update success"
@@ -1159,10 +1159,10 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
  *                   example: "A-00"
  *                 arrival_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *                 end_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *       responses:
  *         200:
  *           description: "parking creation success"
@@ -1233,10 +1233,10 @@ app.post('/user/parking/create',verifyToken,async(req,res) =>{
  *                   example: "A-00"
  *                 arrival_time:
  *                   type: string
- *                   example: "YYYY/MM/DD-12:00"
+ *                   example: "YYYY/MM/DD"
  *                 end_time:
  *                    type: string
- *                    example: "YYYY/MM/DD-12:00"
+ *                    example: "YYYY/MM/DD"
  *       responses:
  *         200:
  *           description: "parking update success"

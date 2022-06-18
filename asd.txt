@@ -1,10 +1,3 @@
-//import jwt_decode from "jwt-decode";
-const supertest = require('supertest');
-const request = supertest('http://localhost:3000'); //test on localhost with port 3000
-jest.setTimeout(30000);
-
-//sample data  
-
 
 
 const bad_admin_sample = {
@@ -13,7 +6,6 @@ const bad_admin_sample = {
     security_name: "Jackson",
 	security_phonenumber : "0124569562",
 }
-
 
 const user_sample = {						// new sample for register success, login success, delete success
     _id : "62aafe1fb1082983abec82cd",
@@ -40,45 +32,17 @@ const facility_sample = {
     'facility': "gym",
 }
 
-parking_sample = {
+const parking_sample = {
    "visitor_id":"62ac3ea279e96d86c9d6c642",
    "carplate_number":"MCB9758",
    "parking_lot":"1",
    "arrival_time":"22/2/2022",
    "end_time":"3/4/2022" 
 }
-let tokena;
-describe('Express Route Test', function () {
 
-	//////////////////////////////////Admin/////////////////////////////////
-	// // Admin-login///-150line
-	////Expected to success////
-	//{ login_username : admin_sample.login_username, login_password : admin_sample.login_password }
-	const admin_sample = {		   
-		login_username : "admin",				// make sure this data is not exist in your mongodb 
-		login_password : "passwordfromadmin"
-	}
-	
-	it('Admin login - success',async() =>{
-		const res = await request
-			.post('/admin/login')
-			.send(admin_sample)//req.body
-		tokena = res.body.token;
-	});
 
-	it('View User - fail', async () => {
-		return request
-		.get('/admin/user/view')
-		.set('Authorization', `Bearer ${tokena}`)
-		.send({})
-		.expect('Content-Type', /json/)
-			.expect(200)
-			.then(res => {
-			 	expect(res.body).toEqual(expect.any(Object));
-			});
-	});
 
-	//////// Admin - create user//////
+//////// Admin - create user//////
 	// //Expected to fail
 	// it('User Registration - success', async () => {
 	// 	return request
@@ -382,4 +346,17 @@ describe('Express Route Test', function () {
 	// 			expect(res.text).toBe("Unauthorized");
 	// 		});
 	// });
-});
+
+
+
+    	it('View User - fail', async () => {
+		return request
+		.get('/admin/user/view')
+		.set('Authorization', `Bearer ${tokena}`)
+		.send({})
+		.expect('Content-Type', /json/)
+			.expect(200)
+			.then(res => {
+			 	expect(res.body).toEqual(expect.any(Object));
+			});
+	});
