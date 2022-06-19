@@ -79,13 +79,9 @@ class Parking {
 	}
 
 	// update parking permission for admin
-	static async updateparkingpermission(token,detail) {		// token = with admin role	
+	static async updateparkingpermission(detail) {		// token = with admin role	
 		return parkings.findOne({								// detail = which visitor's permission is allowed
-			$and : 	
-			[
-				{ 'user_id': detail.user_id },
-				{ 'security_id': token._id }
-			]							
+			'user_id': detail.user_id 		
 		}).then(async parking =>{
 			if (parking) 
 			{

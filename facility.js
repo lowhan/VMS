@@ -75,13 +75,9 @@ class Facility {
 	}
 
 	// update facility permission for admin
-	static async updatefacilitypermission(token,detail) {			// token = with admin role	
+	static async updatefacilitypermission(detail) {			// token = with admin role	
 		return facilities.findOne({									// detail = which visitor's permission is allowed
-			$and : 	
-			[
-				{ 'user_id': detail.user_id },
-				{ 'security_id': token._id }
-			]							
+ 			'user_id': detail.user_id				
 		}).then(async facility =>{
 			if (facility) 
 			{

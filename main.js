@@ -574,7 +574,7 @@ app.patch('/admin/visitor/updatepermission/:user_id',verifyToken, async (req, re
 app.patch('/admin/facility/updatefacilitypermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Facility.updatefacilitypermission(req.token,req.params)
+		let admin = await Facility.updatefacilitypermission(req.params)
 		console.log("\nUpdate facility permission:", req.params)
 		console.log("Update status:", admin)
 
@@ -634,7 +634,7 @@ app.patch('/admin/facility/updatefacilitypermission/:user_id',verifyToken, async
 app.patch('/admin/parking/updateparkingpermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Parking.updateparkingpermission(req.token,req.params)
+		let admin = await Parking.updateparkingpermission(req.params)
 		console.log("\nUpdate parking permission:", req.params)
 		console.log("Update status:", admin)
 

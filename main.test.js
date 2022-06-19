@@ -546,7 +546,7 @@ describe('Express Route Test', function () {
 		return request
 			.patch('/admin/facility/updatefacilitypermission/'+ nobody_user_sample._id)
 			.set('Authorization', `Bearer ${admin_token}`)
-			.send(nobody_user_sample,admin_sample)
+			.send(nobody_user_sample)
 			.expect(200)
 			.expect('Content-Type', /text/)
 			.then(res => {
@@ -695,7 +695,7 @@ describe('Express Route Test', function () {
 	it('Parking Permission Updation - Fail', async () => {
 		return request
 			.patch('/admin/parking/updateparkingpermission/' + nobody_user_sample._id)
-			.send(nobody_user_sample,admin_sample)
+			.send(nobody_user_sample)
 			.expect(401)
 			.expect('Content-Type', /text/)
 			.then(res => {
