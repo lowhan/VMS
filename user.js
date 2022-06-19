@@ -3,7 +3,6 @@ let users, visitors;
 const { hash } = require("bcrypt");
 const bcrypt = require("bcryptjs")
 const saltRounds = 10;
-var encrypt;
 ////////////////////////////////////////////////////////////
 
 class User {
@@ -11,76 +10,15 @@ class User {
 		users = await conn.db("VMS").collection("users");
 		visitors = await conn.db("VMS").collection("visitors");
 	}
-	////////////////////////////////////////////////////////////
-	//CRUD = create, read, update, delete
-	////////////////////////////////////////////////////////////
-	
-	/**
-	 * @remarks
-	 * This method is not implemented yet. To register a new user, you need to call this method.
-	 * 
-	 * @param {*} username 
-	 * @param {*} password 
-	 * @param {*} phone 
-	 * @param {*} role
-	 */	
 
-	// //create
-	// static async register(sample) {		
-	// 	//Hash password	
-	// 	bcrypt.genSalt(saltRounds, function (saltError, salt) {  
-	// 		if (saltError) 
-	// 		{
-	// 			throw saltError
-	// 		} 
-	// 		else 
-	// 		{
-	// 			bcrypt.hash(sample.password, salt, function(hashError, hash) 
-	// 			{  
-	// 				if (hashError) 
-	// 				{
-	// 			  		throw hashError
-	// 				} 
-	// 				else 
-	// 				{
-	// 					encrypt = hash;
-	// 				}
-	// 			})
-	// 		}
-	// 	});
-	// 	//registration
-	// 	return users.findOne({		//Check if username exists						 
-	// 			'username': sample.username			
-	// 	}).then(async user =>{
-	// 		if (user) 
-	// 		{
-	// 			if (user.username == sample.username)
-	// 			{
-	// 				return "creation fail";
-	// 			}
-	// 		}
-	// 		else
-	// 		{
-	// 			await users.insertOne({	 //Save user to database				
-	// 				'username' : sample.username,
-	// 				'password' : encrypt,
-	// 				'phone' : sample.phone,
-	// 				'role' : 'user'
-	// 			})
-	// 			return "creation success";
-	// 		}
-	// 	})	
-	// }
-
-	////////////////////////////////////////////////////////////
-	// read 
-	static async login(sample) { 											
+	// user - login
+	static async loginuser(sample) { 											
 		return users.findOne({		//Check if username exists							
-				'username': sample.username				
+			'login_username': sample.login_username				
 		}).then(async user =>{
 			if (user) // Validate username
 			{ 
-				const PasswordValid = await bcrypt.compare(sample.password, user.password)	// Validate password	 
+				const PasswordValid = await bcrypt.compare(sample.login_password, user.login_password)	// Validate password	 
 				if (PasswordValid == false) 
 				{
 					return "invalid password";
@@ -90,144 +28,126 @@ class User {
 					return user; // Return user object
 				}
 			}
-			else // If user doesn't exists
+			else
 			{
-				return "invalid username";
+				return "invalid username"; // If user doesn't exists
 			}
 		})
 	}
 
-	// read : print user
-	static async view() {
-		return users.aggregate([{
-			$project:
+	// view user info - R
+	static async viewuser (user) { //view the visitor of the specified user
+		return users.findOne(
 			{
-				'_id':0,
-				'username':1,
-				'phone':1
+				'login_username' : user.login_username
 			}
-		}]).toArray().then(async user =>{
-			return user;
-		})
-	}
-
-	////////////////////////////////////////////////////////////																	
-	//delete
-	static async delete(sample) {	// Only delete when username and password are matched
-		return users.findOne({								
-			'username': sample.username				
-		}).then(async user =>{
-			if (user) // Validate username
-			{ 			
-				console.log(user);
-				//const PasswordValid = await bcrypt.compare(user.password,sample.password) // Validate password	
-				if (sample.password != user.password) 
-				{ 
-					return "deletion fail";
-				}
-				else
-				{
-					await users.deleteOne({'username': sample.username});
-					return "deletion success";
-				}
-			}
-			else // if user doesn't exists
+		).then(async user =>{
+			if(user)
 			{
-				return "invalid username";
-			} 
+				return user;
+			}
+			else
+			{
+				return "no user found"
+			}		
 		})
 	}
 
 	////////////////////////////////////////////////////////////
-	//update
-	static async update(sample, updatedoc) {	// Only update when username and password are matched
-		return users.findOne({								
-			'username': sample.username				
-		}).then(async user =>{
-			if (user) // Validate username
-			{ 			
-				//const PasswordValid = await bcrypt.compare(sample.password, user.password) // Validate password		 
-				if (sample.password != user.password) 
-				{ 
-					return "update fail";
-				}
-				else
-				{
-					await users.updateOne(	
-						{ // Target to change
-							'username' : sample.username 
-						}
-						, 
-						{ // Value to change
-							'$set' : { 'phone' : updatedoc.phone,
-									   'role'  : updatedoc.role
-						 	} 
-						}		   
-					);
-					return "update success";
-				}
-			}
-			else // if user doesn't exists
-			{
-				return "invalid username";
-			} 
-		})
-	}
 
-	////////////////////////////////////////////////////////////
-	// create visitor
-	static async createvistor(user,visitor) {	// Only delete when username and password are matched 
-		return visitors.insertOne({	
-			'username' : visitor.username,
-			'phone' : visitor.phone,
-			'role' : 'visitor',
+	// create visitor - C
+	static async createvisitor(user,visitor) {
+		return visitors.findOne({
 			'user_id' : user._id
 		}).then(async res =>{
 			if (res) 
 			{ 	
-				await users.updateOne(	
-				{
-					'username' : user.username 
-				}
-				, 
-				{ 
-					'$set' : { 
-						'visitor_id' : res.insertedId.toString()
-					} 
-				});		
-				return "visitor creation success";
+				return "visitor creation fail";
 			}
 			else 
 			{
-				return "visitor creation fail";
+				await visitors.insertOne( // Insert visitor
+				{	
+					'user_id' : user._id,
+					'security_id' : user.security_id,
+					'visit_permission' : 'no access',
+					'visitor_name' : visitor.visitor_name,
+					'visitor_phonenumber' : visitor.visitor_phonenumber,
+					'number_of_visitors' : visitor.number_of_visitors,
+					'room_info' : visitor.room_info,
+					'arrival_time' : visitor.arrival_time,
+					'end_time' : visitor.end_time
+				})
+				return "visitor creation success";
 			} 
 		})
 	}
-	////////////////////////////////////////////////////////
-	//delete visitor
-	static async deletevisitor(user,visitor) {	// Only delete when username and password are matched
-		return users.findOne({								
-			'username': sample.username				
-		}).then(async user =>{
-			if (user) // Validate username
-			{ 			
-				console.log(user);
-				//const PasswordValid = await bcrypt.compare(user.password,sample.password) // Validate password	
-				if (sample.password != user.password) 
-				{ 
-					return "deletion fail";
-				}
-				else
-				{
-					await users.deleteOne({'username': sample.username});
-					return "deletion success";
-				}
+
+	//Update Visitor - U
+	static async updatevisitor(token,target) {	// target = detail of visitors
+		return visitors.findOne({			
+			'user_id': token._id 						
+	}).then(async visitor =>{
+		if (visitor) 
+		{ 			 
+			await visitors.updateOne(	
+			{ // Target to change
+				'_id' : visitor._id
 			}
-			else // if user doesn't exists
+			, 
+			{ // Value to change
+				'$set' : 
+				{ 
+					'visitor_name' : target.visitor_name,
+					'visitor_phonenumber' : target.visitor_phonenumber,
+					'number_of_visitors' : target.number_of_visitors,
+					'room_info' : target.room_info,
+					'arrival_time' : target.arrival_time,
+					'end_time' : target.end_time	   
+				 } 
+			});
+			return "visitor update success";
+		}
+		else // if user has no visitor
+		{
+			return "visitor update fail";
+		} 
+	})
+	}
+	
+	// delete visitor - D
+	static async deletevisitor(token) {	// delete the visitor of the specified user
+		return visitors.findOne({								
+			'user_id': token._id		
+		}).then(async visitor =>{
+			if (visitor) 
+			{ 			
+				await visitors.deleteOne({'_id':visitor._id});
+				return "visitor deletion success";
+			}
+			else // if visitor doesn't exists
 			{
-				return "invalid username";
+				return "visitor deletion fail";
 			} 
+		})
+	}
+
+	// view visitor - R
+	static async viewvisitor (user) { //view the visitor of the specified user
+		return visitors.findOne(
+			{
+				'user_id' : user._id
+			}
+		).then(async visitor =>{
+			if(visitor)
+			{
+				return visitor;
+			}
+			else
+			{
+				return "no visitor found"
+			}		
 		})
 	}
 }
-module.exports = User;
+module.exports = User; 

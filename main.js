@@ -9,7 +9,9 @@ const jwt = require('jsonwebtoken');                // JWT token
 
 // connection
 MongoClient.connect( 
-	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+	//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+	//"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
+	"mongodb+srv://m001-student:m001-mongodb-basics@sandbox.jx2e8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -44,9 +46,10 @@ const option = {
 			description: 
 				'This is a simple visitor management system that can be applied on the university which student invite '+
 				'their family or friend to come over here and this server is used to ask permissions from security guard. However, in the ' +
-				'university, security will act as the admin of the system to control most of the functions'
+				'university, security will act as the admin of the system to control most of the functions ' +
+				'[Btw, there is a sample admin that can be used: {login_username: admin, login_password: passwordfromadmin}]'
 			,
-			servers: ["http://localhost:3000"],
+			servers: ["http://localhost:3000",process.env.PORT],
 		},
 		components: {
 			securitySchemes: {
@@ -73,7 +76,7 @@ app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Main page
 
 app.get('/', (req, res) => {
-	res.send('Welcome to OUR page ! use /api to use swagger !') // send request to '/' as endpoint and gets the text of 'Welcome to OUR page ! use /api to use swagger !' as response
+	res.send('Welcome to OUR page ! use /api to use swagger !') // Sends request to '/' as the endpoint and gets the text of 'Welcome to OUR page ! use /api to use swagger !'as response
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,7 +179,7 @@ app.post('/admin/login', async (req,res) =>{
  *           description: "No admin exists in database"
  */
 
-// view (use token)
+// view 
 app.get('/admin/view',async(req,res) =>{
 	let view = await Admin.viewadmin()
 	res.send(view);
@@ -516,7 +519,7 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
 app.patch('/admin/visitor/updatepermission/:user_id',verifyToken, async (req, res) => {
 	if(req.token.role == 'admin')
 	{
-		let admin = await Admin.updateuservisitor(req.params)
+		let admin = await Admin.updateuservisitorpermission(req.params)
 		console.log("\nUpdate visitor:", req.params)
 		console.log("Update status:", admin)
 
@@ -815,7 +818,7 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Update visitor (put a visitor id and their info)
+ *       summary: Update visitor 
  *       description: "Update a visitor account"
  *       requestBody:
  *         required: true
@@ -1558,7 +1561,7 @@ app.listen(port, () => {
 ///////////////////////////////jwt - authentication and authorization////////////////////////////
 
 function generateAccessToken(payload) {
-	return jwt.sign(payload, "my-super-secret", { expiresIn: '12h'}); // set expire time duration
+	return jwt.sign(payload, "my-super-secret", { expiresIn: '2h'}); // set expire time duration
 }
 
 function verifyToken(req, res, next) {
