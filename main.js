@@ -9,8 +9,7 @@ const jwt = require('jsonwebtoken');                // JWT token
 
 // connection
 MongoClient.connect( 
-	//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
-	"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
+	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 	// main DB for server
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -46,7 +45,7 @@ const option = {
 				'This is a simple visitor management system that can be applied on the university which student invite '+
 				'their family or friend to come over here and this server is used to ask permissions from security guard. However, in the ' +
 				'university, security will act as the admin of the system to control most of the functions ' +
-				'[Btw, there is a sample admin that can be used: {login_username: admin, login_password: passwordfromadmin}]'
+				'[Btw, there is a sample admin that can be used: {login_username: "admin", login_password: "passwordfromadmin"}]'
 			,
 			servers: ["http://localhost:3000",process.env.PORT],
 		},
@@ -75,7 +74,7 @@ app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Main page
 
 app.get('/', (req, res) => {
-	res.send('Welcome to OUR page ! use /api to use swagger !') // maybe u can add details at here
+	res.send('Welcome to OUR page ! use /api to use swagger !') // Sends request to '/' as the endpoint and gets the text of 'Welcome to OUR page ! use /api to use swagger !'as response
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,10 +143,10 @@ app.post('/admin/login', async (req,res) =>{
 	else
 	{
 		res.status(200).json({
-			token : generateAccessToken({
+			token : generateAccessToken({								// generate token for authentication, authorization
 					'_id': admin._id,
 					'login_username' : admin.login_username,
-					'login_password' : admin.login_password,       // from user.username
+					'login_password' : admin.login_password,     
 					'security_name' : admin.security_name,
 					'security_phonenumber' : admin.security_phonenumber,	
 					'role' : 'admin'
@@ -186,7 +185,6 @@ app.get('/admin/view',async(req,res) =>{
 
 // create - user - swagger 
 // need to type - login_username, login_password, user_name, user_phonenumber
- 
  /**
  * @swagger
  * paths:
@@ -287,7 +285,7 @@ app.post('/admin/user/create',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - admin
- *       summary: View user 
+ *       summary: View every user 
  *       description: "View every user under a security"
  *       responses:
  *         200:
@@ -315,7 +313,6 @@ app.get('/admin/user/view',verifyToken,async(req,res) =>{
 
 // delete - user - swagger 
 // need to type - login_username 
-
 /**
  * @swagger
  * paths:
@@ -325,7 +322,7 @@ app.get('/admin/user/view',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - admin
- *       summary: Delete user (put a target user)
+ *       summary: Delete user (put a user's login_username)
  *       description: "Delete a user account"
  *       requestBody:
  *         required: true
@@ -379,7 +376,6 @@ app.delete('/admin/user/delete', verifyToken, async (req, res) => {
 
 // update - user - swagger
 // need to type - login_username (target), user_name , user_phonenumber
-
 /**
  * @swagger
  * paths:
@@ -389,7 +385,7 @@ app.delete('/admin/user/delete', verifyToken, async (req, res) => {
  *         - jwt: []
  *       tags:
  *         - admin
- *       summary: Update user (put a target user and their info)
+ *       summary: Update user (put a user's login_username with other details)
  *       description: "Update a user account"
  *       requestBody:
  *         required: true
@@ -448,7 +444,6 @@ app.patch('/admin/user/update',verifyToken, async (req, res) => {
 
 // view - visitor - swagger 
 // need to type - nothing 
-
 /**
  * @swagger
  * paths:
@@ -458,7 +453,7 @@ app.patch('/admin/user/update',verifyToken, async (req, res) => {
  *         - jwt: []
  *       tags:
  *         - admin
- *       summary: View visitor 
+ *       summary: View every visitor 
  *       description: "View every visitor account"
  *       responses:
  *         200:
@@ -485,7 +480,6 @@ app.get('/admin/visitor/view',verifyToken ,async(req,res) =>{
 
 // update - visitor - permission - swagger 
 // need to type - user_id
-
 /**
  * @swagger
  * paths:
@@ -545,8 +539,7 @@ app.patch('/admin/visitor/updatepermission/:user_id',verifyToken, async (req, re
 })		
 
 // update - facility - permission - swagger
-// need to type - visitor_id
-
+// need to type - user_id
 /**
  * @swagger
  * paths:
@@ -607,7 +600,6 @@ app.patch('/admin/facility/updatefacilitypermission/:user_id',verifyToken, async
 
 // update - parking - permission - swagger
 // need to type - user_id
-
 /**
  * @swagger
  * paths:
@@ -667,7 +659,6 @@ app.patch('/admin/parking/updateparkingpermission/:user_id',verifyToken, async (
 })
 
 ///////////////////////////// user /////////////////////////////
-
 // login - user - swagger
 // need to type - login_username, login_password
  /**
@@ -727,9 +718,45 @@ app.post('/user/login', async (req,res) =>{
 	}
 })
 
+// view - user - swagger 
+// need to type - nothing 
+
+/**
+ * @swagger
+ * paths:
+ *   /user/view:
+ *     get:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: View user's information
+ *       description: "View information of user"
+ *       responses:
+ *         200:
+ *           description: "View user information success"
+ *           content:
+ *             schema:
+ *               type: object
+ *         401:
+ *           description: "Unauthorised"
+ */
+
+// view - user (use token)
+app.get('/user/view',verifyToken ,async(req,res) =>{
+	if(req.token.role == 'user')
+	{
+		let view = await User.viewuser(req.token)
+		res.status(200).send(view);
+	}
+	else
+	{
+		res.status(401).send("Unauthorized");
+	}
+})
+
 // create - visitor - swagger
 // need to type - visitor_name, visitor_phonenumber, number_of_visitors, room_info, arrival_time, end_time
-
 /**
  * @swagger
  * paths:
@@ -806,8 +833,7 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
 })
 
 // update - visitor - swagger
-// need to type - visitor_id, visitor_name, visitor_phonenumber, number_of_visitors, room_info, arrival_time, end_time
-
+// need to type - visitor_name, visitor_phonenumber, number_of_visitors, room_info, arrival_time, end_time
 /**
  * @swagger
  * paths:
@@ -883,8 +909,7 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
 })
 
 // delete - visitor - swagger
-// need to type - visitor_id
-
+// need to type - nothing
 /**
  * @swagger
  * paths:
@@ -894,7 +919,7 @@ app.patch('/user/visitor/update',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Delete visitor (put the visitor id)
+ *       summary: Delete visitor
  *       description: "Delete a visitor account"
  *       responses:
  *         200:
@@ -939,7 +964,6 @@ app.delete('/user/visitor/delete',verifyToken,async(req,res) =>{
 
 // view - visitor - swagger
 // need to type - nothing
-
 /**
  * @swagger
  * paths:
@@ -996,7 +1020,6 @@ app.get('/user/visitor/view',verifyToken,async(req,res) =>{
 
 // create - facility - swagger
 // need to type - visitor_id, number_of_participants, facility
-
 /**
  * @swagger
  * paths:
@@ -1006,7 +1029,7 @@ app.get('/user/visitor/view',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Create facility
+ *       summary: Create a facility booking
  *       description: "Create a new facility booking"
  *       requestBody:
  *         required: true
@@ -1025,7 +1048,7 @@ app.get('/user/visitor/view',verifyToken,async(req,res) =>{
  *         200:
  *           description: "facility creation success"
  *         400:
- *           description: "facility creation fail"
+ *           description: "facility creation fail (duplicate booking)"
  *         401:
  *           description: "Unauthorized"
  *         403:
@@ -1064,7 +1087,6 @@ app.post('/user/facility/create',verifyToken,async(req,res) =>{
 
 // update - facility - detail - swagger
 // need to type - number_of_participants, facility
-
 /**
  * @swagger
  * paths:
@@ -1074,7 +1096,7 @@ app.post('/user/facility/create',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Update facility
+ *       summary: Update facility booking's details
  *       description: "Update a facility booking"
  *       requestBody:
  *         required: true
@@ -1132,7 +1154,6 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
 
 // create - parking - swagger
 // need to type - visitor_id, carplate_number, parking_lot, arrival_time, end_time
-
 /**
  * @swagger
  * paths:
@@ -1142,7 +1163,7 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Create parking
+ *       summary: Create a parking booking
  *       description: "Create a new parking booking"
  *       requestBody:
  *         required: true
@@ -1169,7 +1190,7 @@ app.patch('/user/facility/update',verifyToken,async(req,res) =>{
  *         200:
  *           description: "parking creation success"
  *         400:
- *           description: "parking creation fail"
+ *           description: "parking creation fail (duplicate booking)"
  *         401:
  *           description: "Unauthorized"
  *         403:
@@ -1208,7 +1229,6 @@ app.post('/user/parking/create',verifyToken,async(req,res) =>{
 
 // update - parking - detail - swagger
 // need to type - carplate_number, parking_lot, arrival_time, end_time
-
 /**
  * @swagger
  * paths:
@@ -1218,7 +1238,7 @@ app.post('/user/parking/create',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Update parking
+ *       summary: Update parking booking's details
  *       description: "Update a parking booking"
  *       requestBody:
  *         required: true
@@ -1284,7 +1304,6 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
 
 // view - access - swagger - params
 // need to type - user_id
-
 /**
  * @swagger
  * paths:
@@ -1302,7 +1321,7 @@ app.patch('/user/parking/update',verifyToken,async(req,res) =>{
  *           required: true
  *       responses:
  *         200:
- *           description: "Return visitor' details"
+ *           description: "Return visitor's details"
  *         403:
  *           description: "Forbidden"
  */
@@ -1321,13 +1340,11 @@ app.get('/visitor/view/:user_id', async(req,res) =>{
 	}
 })
 
-
 ///////////////////////////// facility /////////////////////////////
 
 // everyone can use
 // view - facility - swagger
 // need to type - _id (any)
-
 /**
  * @swagger
  * paths:
@@ -1345,7 +1362,7 @@ app.get('/visitor/view/:user_id', async(req,res) =>{
  *             type: string 
  *       responses:
  *         200:
- *           description: "Facility booking found"
+ *           description: "A Facility booking detail is sent"
  *         400:
  *           description: "No facility booking found"
  *         403:
@@ -1375,9 +1392,7 @@ app.get('/facility/view/:_id', async(req,res) =>{
 
 // user and admin can use
 // delete - facility - swagger 
-
 // need to type - user_id
-
 /**
  * @swagger
  * paths:
@@ -1399,7 +1414,7 @@ app.get('/facility/view/:_id', async(req,res) =>{
  *         200:
  *           description: "facility delete success"
  *         400:
- *           description: "facility delete fail"
+ *           description: "facility delete fail (there is no booking)"
  *         401:
  *           description: "Unauthorized"
  *         403:
@@ -1441,7 +1456,6 @@ app.delete('/facility/delete/:user_id',verifyToken,async(req,res) =>{
 // everyone can use
 // view - parking - swagger
 // need to type - _id (any)
-
 /**
  * @swagger
  * paths:
@@ -1459,7 +1473,7 @@ app.delete('/facility/delete/:user_id',verifyToken,async(req,res) =>{
  *             type: string
  *       responses:
  *         200:
- *           description: "Parking booking found success"
+ *           description: "A parking booking details is sent"
  *         400:
  *           description: "No parking booking found"
  *         403:
@@ -1489,9 +1503,7 @@ app.get('/parking/view/:_id',async(req,res) =>{
 
 // user and admin can use
 // delete - parking - swagger 
-
 // need to type - user_id
-
 /**
  * @swagger
  * paths:
@@ -1513,7 +1525,7 @@ app.get('/parking/view/:_id',async(req,res) =>{
  *         200:
  *           description: "parking delete success"
  *         400:
- *           description: "parking delete fail"
+ *           description: "parking delete fail (there is no booking)"
  *         401:
  *           description: "Unauthorized"
  *         403:
@@ -1560,7 +1572,7 @@ app.listen(port, () => {
 ///////////////////////////////jwt - authentication and authorization////////////////////////////
 
 function generateAccessToken(payload) {
-	return jwt.sign(payload, "my-super-secret", { expiresIn: '2h'}); // set expire time duration
+	return jwt.sign(payload, "my-super-secret", {expiresIn: '2h'}); // set expire time duration
 }
 
 function verifyToken(req, res, next) {

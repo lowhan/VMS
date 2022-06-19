@@ -42,8 +42,7 @@ describe("User Account Management", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
+			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",	// DB for testing
 			{ useNewUrlParser: true },
 		);
 		User.injectDB(client);
@@ -52,7 +51,7 @@ describe("User Account Management", () => {
 		await client.close();
 	})
 
-	// // user - login 
+	///////////////////login user//////////////////////
 	// test("User login - success", async () => {
 	// 	const res = await User.loginuser(sampleuser);
 	// 	expect(res.login_username).toBe(sampleuser.login_username);

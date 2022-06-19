@@ -42,8 +42,7 @@ describe("VMS - TDD - facility test", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
+			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",	// DB for testing
 			{ useNewUrlParser: true },
 		);
 		Facility.injectDB(client);
@@ -76,7 +75,7 @@ describe("VMS - TDD - facility test", () => {
     //     expect(res.visitor_id).toEqual(expect.any(String)); 
 	// })
 
-    // test("view facility detail - fail", async () => {  //will succeed if there is not any doc
+    // test("view facility detail - fail", async () => {  // will succeed if there is not any doc
 	// 	const res = await Facility.viewfacility(badtoken);
 	// 	expect(res).toBe("facility view fail");
 	// })
