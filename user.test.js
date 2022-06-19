@@ -17,15 +17,15 @@ const samplevisitor = {							 // new visitor sample
 	'visitor_phonenumber' : '0124685214',
 	'number_of_visitors' : 5,
 	'room_info' : 'A102',
-	'arrival_time' : '16/3/22',
-	'end_time' : '16/4/22'
+	'arrival_time' : '22/03/16',
+	'end_time' : '22/4/16'
 }
 
 const updatedocument = {						 // detail sample for updating
 	'number_of_visitors' : 2,
 	'room_info' : 'A101',
-	'arrival_time' : '5/1/22',
-	'end_time' : '10/2/22'
+	'arrival_time' : '22/01/05',
+	'end_time' : '22/02/10'
 }
 
 const badsampleuser = {							 // bad user sample
