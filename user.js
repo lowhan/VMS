@@ -90,7 +90,7 @@ class User {
 			});
 			return "visitor update success";
 		}
-		else // if user has a visitor
+		else // if user has no visitor
 		{
 			return "visitor update fail";
 		} 

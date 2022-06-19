@@ -45,9 +45,10 @@ const option = {
 			description: 
 				'This is a simple visitor management system that can be applied on the university which student invite '+
 				'their family or friend to come over here and this server is used to ask permissions from security guard. However, in the ' +
-				'university, security will act as the admin of the system to control most of the functions'
+				'university, security will act as the admin of the system to control most of the functions ' +
+				'[Btw, there is a sample admin that can be used: {login_username: admin, login_password: passwordfromadmin}]'
 			,
-			servers: ["http://localhost:3000"],
+			servers: ["http://localhost:3000",process.env.PORT],
 		},
 		components: {
 			securitySchemes: {
@@ -816,7 +817,7 @@ app.post('/user/visitor/create',verifyToken,async(req,res) =>{
  *         - jwt: []
  *       tags:
  *         - user
- *       summary: Update visitor (put a visitor id and their info)
+ *       summary: Update visitor 
  *       description: "Update a visitor account"
  *       requestBody:
  *         required: true
