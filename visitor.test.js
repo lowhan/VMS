@@ -11,7 +11,8 @@ describe("VMS - TDD - visitor test", () => {
 	beforeAll(async () => {
 		client = await MongoClient.connect(
 		//	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-		"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",	
+		//"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",	
+		"mongodb+srv://m001-student:m001-mongodb-basics@sandbox.jx2e8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 		{ useNewUrlParser: true },
 		);
 		Visitor.injectDB(client);
@@ -20,13 +21,9 @@ describe("VMS - TDD - visitor test", () => {
 		await client.close();
 	})
 
-	///////////////////////////////////////////////////////////////
-	// // view - visitor access //
-
+	// view - visitor access //
 	test("View visitor access - success", async () => {
 		const res = await Visitor.visitorviewaccess(userId);
-		console.log(res)
-		expect(res.body).toEqual(expect.any(Object))
+		expect(res).toEqual(expect.any(Object))
 	})
-
 });	
