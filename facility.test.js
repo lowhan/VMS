@@ -3,7 +3,7 @@ const Facility = require("./facility");
 
 //sample data
 const token = {									// user token sample
-    _id : "62aafe1fb1082983abec82cd", 		
+    user_id : "62aafe1fb1082983abec82cd", 		
 	security_id:"62aafc8472263b2a3ed6e658",
     login_username : "usertest3",				
 	login_password : "password3",
@@ -32,6 +32,7 @@ const badtoken = {								// bad token sample
 }
 
 const detail = {
+	"user_id":"62aafe1fb1082983abec82cd",
     'visitor_id' : "62ab3b290983751028fff1c6", 	// detail sample for updating
     'number_of_participants': 3,
     'facility': "gym",
@@ -41,7 +42,8 @@ describe("VMS - TDD - facility test", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-			"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
 			{ useNewUrlParser: true },
 		);
 		Facility.injectDB(client);

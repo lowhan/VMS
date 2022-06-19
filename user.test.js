@@ -111,11 +111,7 @@ describe("User Account Management", () => {
 	// })
 	
 	// test("User - Visitor Deletion - success", async() => {
-<<<<<<< Updated upstream
-    // const res = await User.deletevisitor(sampleuser);
-=======
     // const res = await User.deletevisitor(samplevisitor);
->>>>>>> Stashed changes
 	// expect(res).toBe("visitor deletion success");
 	// })
 });

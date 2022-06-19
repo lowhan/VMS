@@ -46,14 +46,10 @@ describe("Admin Account Management", () => {
 	let client;
 	beforeAll(async () => {
 		client = await MongoClient.connect(
-<<<<<<< Updated upstream
-			"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-=======
 			//"mongodb+srv://m001-student:m001-mongodb-basics@sandbox.jx2e8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 			//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
 			"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
 
->>>>>>> Stashed changes
 			{ useNewUrlParser: true },
 		);
 		Admin.injectDB(client);

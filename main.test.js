@@ -1,4 +1,4 @@
-<<<<<<< Updated upstream
+
 const supertest = require('supertest');
 const request = supertest('http://localhost:3000'); //test on localhost with port 3000
 jest.setTimeout(30000);
@@ -188,7 +188,7 @@ describe('Express Route Test', function () {
 			 	expect(res.text).toBe("Unauthorized");
 			});
 	});
-=======
+
 // //import jwt_decode from "jwt-decode";
 // const jwt_decode = require('jwt-decode');
 // var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MmFjMmVkMWJhY2I2MWIyMTIxYTJlM2IiLCJsb2dpbl91c2VybmFtZSI6ImFkbWluIiwibG9naW5fcGFzc3dvcmQiOiIkMmEkMTAkYm41cnNjRTl1Vy9ST2pPbjhyYlE0T0g3NVlwRTh2bGNQd1lnZ1d0dDBubjl6bmZXSUJGcUciLCJzZWN1cml0eV9uYW1lIjoiSmFja3NvbiIsInNlY3VyaXR5X3Bob25lbnVtYmVyIjoiMDEyNDU2OTU2MiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY1NTQ4MzE1MywiZXhwIjoxNjU1NDg2NzUzfQ.XOk5IwQedLZQ68Mcg5Ydhh8gkcCsrYdFh5XGJ7dmxv4";
@@ -556,7 +556,7 @@ describe('Express Route Test', function () {
 // 				expect(res.text).toBe("Unauthorized");
 // 			});
 // 	});
->>>>>>> Stashed changes
+
 
 	//////////////////////////////////////////////////////
 
@@ -608,4 +608,4 @@ describe('Express Route Test', function () {
 		user_token = res.body.token;
 	});
 
-// });
+});

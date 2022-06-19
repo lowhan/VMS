@@ -3,20 +3,16 @@ const Parking = require("./parking");
 
 //sample data
 const token = {            							 // admin token sample
-    "_id" : "user1",
-    "security_id":"admin1"
+    "_id" : "admin1",
+	"user_id":"user1"
 }
 
 const detail = {
-<<<<<<< Updated upstream
-    'visitor_id' : "visitor1", 						 // detail sample for updating
-=======
-	'user_id':''
+	'user_id':'user1',
     'visitor_id' : "visitor1", 	// insert by user
->>>>>>> Stashed changes
     'carplate_number': "detail.carplate_number",
     'parking_lot': "detail.parking_lot",
-    'parking_access_permission': "no_access",
+    'parking_access_permission': "access",
     'arrival_time': "detail.arrival_time",
     'end_time': "update_time"
 }
@@ -80,10 +76,10 @@ describe("VMS - TDD - parking test", () => {
     // ///////////////////////////////////////////////////////////////
 	// // update permission - parking //
 
-	test("Update parking permission - success", async () => {
-		const res = await Parking.updateparkingpermission(token,detail);
-		expect(res).toBe("parking permission update success");
-	})
+	// test("Update parking permission - success", async () => {
+	// 	const res = await Parking.updateparkingpermission(token,detail);
+	// 	expect(res).toBe("parking permission update success");
+	// })
 
     // test("Update parking permission - fail", async () => {
 	// 	const res = await Parking.updateparkingpermission(token,detail);
@@ -98,8 +94,8 @@ describe("VMS - TDD - parking test", () => {
 	// 	expect(res).toBe("parking deletion success");
 	// })
 
-    // test("delete parking - fail", async () => {
-	// 	const res = await Parking.deleteparking(detail);
-	// 	expect(res).toBe("parking deletion fail");
-	// })
-});
+//     test("delete parking - fail", async () => {
+// 		const res = await Parking.deleteparking(detail);
+// 		expect(res).toBe("parking deletion fail");
+// 	})
+ });

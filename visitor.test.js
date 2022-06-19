@@ -2,12 +2,10 @@ const MongoClient = require("mongodb").MongoClient;
 const Visitor = require("./visitor");
 
 //sample user id 
-<<<<<<< Updated upstream
-const userId = "62a8a0a711245af602f0d323";	// will change if the user is deleted
-=======
-const userId = "62ada110756010477f89e51a";//"62a8a0a711245af602f0d323";
->>>>>>> Stashed changes
-
+const userId =
+{ 
+	user_id:"62aafe1fb1082983abec82cd"	// will change if the user is deleted
+}
 describe("VMS - TDD - visitor test", () => {
 	let client;
 	beforeAll(async () => {
@@ -25,45 +23,10 @@ describe("VMS - TDD - visitor test", () => {
 	///////////////////////////////////////////////////////////////
 	// // view - visitor access //
 
-	// test("View visitor access - success", async () => {
-	// 	const res = await Visitor.visitorviewaccess(userId);
-	// 	expect(res.username).toEqual(expect.any(String)); 
-	// 	expect(res.user_id).toBe(userId);
-	// 	expect(res.role).toBe("visitor");
-	// })
+	test("View visitor access - success", async () => {
+		const res = await Visitor.visitorviewaccess(userId);
+		console.log(res)
+		expect(res.body).toEqual(expect.any(Object))
+	})
 
-	///////////////////////////////////////////////////////////////
-	// // view - facility access //
-
-<<<<<<< Updated upstream
-	// test("View facility access - success", async () => {
-	// 	const res = await Visitor.visitorviewfacility(userId);
-	// 	expect(res.number_of_participants).toEqual(expect.any(Number));
-	// 	expect(res.user_id).toBe(userId);
-	// })
-
-	///////////////////////////////////////////////////////////////
-	// // view - parking access //
-=======
-// 	test("View facility access - success", async () => {
-// 		const res = await Visitor.visitorviewfacility(userId);
-// 		expect(res.number_of_participants).toEqual(expect.any(Number));
-// 		expect(res.user_id).toBe(userId);
-// 	})
-
-// 	///////////////////////////////////////////////////////////////
-// 					// view - parking access //
-
-// 	test("View parking access - success", async () => {
-// 		const res = await Visitor.visitorviewparking(userId);
-// 		expect(res.carplate_number).toEqual(expect.any(String)); 
-// 		expect(res.user_id).toBe(userId);
-// 	})
->>>>>>> Stashed changes
-
-	// test("View parking access - success", async () => {
-	// 	const res = await Visitor.visitorviewparking(userId);
-	// 	expect(res.carplate_number).toEqual(expect.any(String)); 
-	// 	expect(res.user_id).toBe(userId);
-	// })
-});
+});	

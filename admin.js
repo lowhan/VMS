@@ -217,11 +217,7 @@ class Admin {
 	}
 
 	// update visitor permission - U
-<<<<<<< Updated upstream
-	static async updateuservisitor(sample) {
-=======
 	static async updateuservisitorpermission(sample) {	// Only update when username and password are matched
->>>>>>> Stashed changes
 		return visitors.findOne({								
 			'user_id': sample.user_id				
 		}).then(async visitor =>{
