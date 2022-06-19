@@ -5,6 +5,7 @@ const Visitor = require("./visitor");				// Import visitor class
 const Admin = require("./admin");                   // Import admin class
 const Facility = require("./facility")              // Import facility class
 const Parking = require("./parking")				// Import parking class
+const Data = require("./dataanalytics");			// Import data analytics class
 const jwt = require('jsonwebtoken');                // JWT token		
 
 // connection
@@ -21,6 +22,7 @@ MongoClient.connect(
 	Visitor.injectDB(client);
 	Facility.injectDB(client);
 	Parking.injectDB(client);
+	Data.injectDB(client);
 })
 
 // web application framework for node.js HTTP applications
@@ -1560,6 +1562,58 @@ app.delete('/parking/delete/:user_id',verifyToken,async(req,res) =>{
 	{
 		return res.status(401).send("Unauthorized")
 	}
+})
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ /**
+ * @swagger
+ * paths:
+ *   /data/arrival/view:
+ *     get:
+ *       tags:
+ *         - general
+ *       summary: View peak arrival time (everyone can access)
+ *       description: "View peak arrival time"
+ *       responses:
+ *         200:
+ *           description: "view peak arrival time successfully"
+ *           content:
+ *             schema:
+ *               type: array
+ *         400:
+ *           description: "No data inside"
+ */
+
+// view 
+app.get('/data/arrival/view',async(req,res) =>{
+	let view = await Data.viewpeakarrivaltime()
+	res.send(view);
+})
+
+ /**
+ * @swagger
+ * paths:
+ *   /data/end/view:
+ *     get:
+ *       tags:
+ *         - general
+ *       summary: View peak end time (everyone can access)
+ *       description: "View peak end time"
+ *       responses:
+ *         200:
+ *           description: "view peak end time successfully"
+ *           content:
+ *             schema:
+ *               type: array
+ *         400:
+ *           description: "No data inside"
+ */
+
+// view 
+app.get('/data/end/view',async(req,res) =>{
+	let view = await Data.viewpeakendtime()
+	res.send(view);
 })
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
