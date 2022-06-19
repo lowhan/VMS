@@ -683,8 +683,8 @@ describe('Express Route Test', function () {
 			.expect(200)
 			.expect('Content-Type', /json/)
 			.then(res => {
-				user_sample_id = res.body[0].user_id;			// get user_id from visitor that just created
-				expect(res.body).toEqual(expect.any(Array));
+				user_sample_id = res.body.user_id;			// get user_id from visitor that just created
+				expect(res.body).toEqual(expect.any(Object));
 		});
 	});
 

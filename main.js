@@ -9,8 +9,8 @@ const jwt = require('jsonwebtoken');                // JWT token
 
 // connection
 MongoClient.connect( 
-	//"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
-	"mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",
+	"mongodb+srv://m001-student:m001-mongodb-basics@Sandbox.vqzcw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",  // main DB for main TDD
+	// "mongodb+srv://m001-students:m001-mongodb-basics@sandbox.kiupl.mongodb.net/?retryWrites=true&w=majority",			 // sub DB for others TDD
 	{ useNewUrlParser: true },
 ).catch(err => {
 	console.error(err.stack)
@@ -46,7 +46,7 @@ const option = {
 				'This is a simple visitor management system that can be applied on the university which student invite '+
 				'their family or friend to come over here and this server is used to ask permissions from security guard. However, in the ' +
 				'university, security will act as the admin of the system to control most of the functions ' +
-				'[Btw, there is a sample admin that can be used: {login_username: admin, login_password: passwordfromadmin}]'
+				'[Btw, there is a sample admin that can be used: {login_username: "admin", login_password: "passwordfromadmin"}]'
 			,
 			servers: ["http://localhost:3000",process.env.PORT],
 		},
@@ -724,6 +724,43 @@ app.post('/user/login', async (req,res) =>{
 			}),
 			status : 'user login success'
 		})
+	}
+})
+
+// view - user - swagger 
+// need to type - nothing 
+
+/**
+ * @swagger
+ * paths:
+ *   /user/view:
+ *     get:
+ *       security:
+ *         - jwt: []
+ *       tags:
+ *         - user
+ *       summary: View user's information
+ *       description: "View information of user"
+ *       responses:
+ *         200:
+ *           description: "View user information success"
+ *           content:
+ *             schema:
+ *               type: object
+ *         401:
+ *           description: "Unauthorised"
+ */
+
+// view - user (use token)
+app.get('/user/view',verifyToken ,async(req,res) =>{
+	if(req.token.role == 'user')
+	{
+		let view = await User.viewuser(req.token)
+		res.status(200).send(view);
+	}
+	else
+	{
+		res.status(401).send("Unauthorized");
 	}
 })
 

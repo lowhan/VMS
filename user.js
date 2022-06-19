@@ -35,6 +35,24 @@ class User {
 		})
 	}
 
+	// view user info - R
+	static async viewuser (user) { //view the visitor of the specified user
+		return users.findOne(
+			{
+				'login_username' : user.login_username
+			}
+		).then(async user =>{
+			if(user)
+			{
+				return user;
+			}
+			else
+			{
+				return "no user found"
+			}		
+		})
+	}
+
 	////////////////////////////////////////////////////////////
 
 	// create visitor - C
@@ -116,11 +134,11 @@ class User {
 
 	// view visitor - R
 	static async viewvisitor (user) { //view the visitor of the specified user
-		return visitors.find(
+		return visitors.findOne(
 			{
 				'user_id' : user._id
 			}
-		).toArray().then(async visitor =>{
+		).then(async visitor =>{
 			if(visitor)
 			{
 				return visitor;

@@ -20,13 +20,9 @@ describe("VMS - TDD - visitor test", () => {
 		await client.close();
 	})
 
-	///////////////////////////////////////////////////////////////
-	// // view - visitor access //
-
+	// view - visitor access //
 	test("View visitor access - success", async () => {
 		const res = await Visitor.visitorviewaccess(userId);
-		console.log(res)
-		expect(res.body).toEqual(expect.any(Object))
+		expect(res).toEqual(expect.any(Object))
 	})
-
 });	
